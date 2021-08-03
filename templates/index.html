@@ -32,18 +32,23 @@
             <div class="card card-4">
                 <div class="card-body">
                     <h2 class="title">Registration Form</h2>
+                    <h3 class="title">This website will help you in solving your problems in study, programming and anything else.</h3>
                     <form method="POST">
+                        <div class="input-group">
+                            <label class="label">User name</label>
+                            <input class="input--style-4" type="text" name="username" id="username" required>
+                        </div>
                         <div class="row row-space">
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">first name</label>
-                                    <input class="input--style-4" type="text" name="first_name">
+                                    <input class="input--style-4" type="text" name="first_name" id="first_name" required>
                                 </div>
                             </div>
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">last name</label>
-                                    <input class="input--style-4" type="text" name="last_name">
+                                    <input class="input--style-4" type="text" name="last_name" id="last_name" required>
                                 </div>
                             </div>
                         </div>
@@ -52,7 +57,7 @@
                                 <div class="input-group">
                                     <label class="label">Birthday</label>
                                     <div class="input-group-icon">
-                                        <input class="input--style-4 js-datepicker" type="text" name="birthday">
+                                        <input class="input--style-4 js-datepicker" type="text" name="birthday" id="birthday" required>
                                         <i class="zmdi zmdi-calendar-note input-icon js-btn-calendar"></i>
                                     </div>
                                 </div>
@@ -62,11 +67,11 @@
                                     <label class="label">Gender</label>
                                     <div class="p-t-10">
                                         <label class="radio-container m-r-45">Male
-                                            <input type="radio" checked="checked" name="gender">
+                                            <input type="radio" checked="checked" name="gender" id="gender" value="male" required>
                                             <span class="checkmark"></span>
                                         </label>
                                         <label class="radio-container">Female
-                                            <input type="radio" name="gender">
+                                            <input type="radio" name="gender" id='gender' value="female" required>
                                             <span class="checkmark"></span>
                                         </label>
                                     </div>
@@ -77,13 +82,13 @@
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">Email</label>
-                                    <input class="input--style-4" type="email" name="email">
+                                    <input class="input--style-4" type="email" name="email" id="email" required>
                                 </div>
                             </div>
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">Phone Number</label>
-                                    <input class="input--style-4" type="text" name="phone">
+                                    <input class="input--style-4" type="text" name="phone" id="phone" required>
                                 </div>
                             </div>
                         </div>
@@ -91,10 +96,14 @@
                             <label class="label">Subject</label>
                             <div class="rs-select2 js-select-simple select--no-search">
                                 <select name="subject">
-                                    <option disabled="disabled" selected="selected">Choose option</option>
-                                    <option>Subject 1</option>
-                                    <option>Subject 2</option>
-                                    <option>Subject 3</option>
+                                    <option disabled="disabled" selected="selected">About you</option>
+                                    <option>School Student</option>
+                                    <option>College Stdent</option>
+                                    <option>Graduate</option>
+                                    <option>Employed</option>
+                                    <option>Self - Employed</option>
+                                    <option>Businessman or Investor</option>
+                                    <option>Retired</option>
                                 </select>
                                 <div class="select-dropdown"></div>
                             </div>
