@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+{% block body %}
+<div class="card-4" style="margin: auto;">
+    <div class="card-body">
+      A verification link is sent on the email address - {{ email }}
+    </div>
+      <form class="needs-validation" novalidate action="/verify/email" method="POST">
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <label for="firstName" class="form-label">Enter the code: </label>
+            <input type="text" class="form-control" id="code" name='code' required>
+            <div class="invalid-feedback">
+              Valid first name is required.
+            </div>
+          </div>
+          </div>
+      </form>
+  </div>
+{% endblock %}
