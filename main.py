@@ -34,7 +34,7 @@ class login(db.Model):
 def index():
     msg = None
     if request.method == 'POST':
-        session["username"] = request.form.get('username')
+        session["username"] = request.form.get('username').lower()
         session["first_name"] = request.form.get('first_name')
         session["last_name"] = request.form.get('last_name')
         session["password"] = request.form.get('password')
@@ -51,8 +51,6 @@ def index():
             msg = 'Already an account with this email.'
         elif session.get('password')!=rpassword:
             msg='Password and repeat password are different.'
-        # elif session.get('about')=='nothing':
-        #     msg='Please fill out the  a'
         else:
             N = 7
             res = ''.join(random.choices(string.ascii_uppercase + string.digits, k = N))
@@ -77,8 +75,12 @@ def verify():
             email = session.get('email')
             about = session.get('about')
             info = login(username=username, first_name=first_name, last_name=last_name, password=password, birthday=birthday, gender=gender, email=email, about=about)
-            db.session.add(info)
-            db.session.commit()
+            try:
+                db.session.add(info)
+                db.session.commit()
+                return 'Added'
+            except:
+                return 'Something went wrong your credentials not uploaded.'
         else:
             return 'Wrong'
     return render_template('verify.html', title='Email verification', email=session.get('email'))
