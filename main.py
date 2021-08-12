@@ -1,7 +1,7 @@
 import string
-import os
 import random
 from flask import Flask, render_template, request, redirect, session
+from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_sslify import SSLify
 import smtplib
@@ -12,6 +12,13 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://sql6430372:aaaRgkwBbK@sql6.free
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "super-secret-key"
 db = SQLAlchemy(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(username):
+    return login.query.get(username)
+
 def sendEmail(to, content):
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo()
@@ -21,7 +28,9 @@ def sendEmail(to, content):
     server.close()
 
 
-class login(db.Model):
+class login(UserMixin, db.Model):
+    def get_id(self):
+        return (self.username)
     username = db.Column(db.String(100), primary_key=True)
     first_name = db.Column(db.String(100), nullable=False)
     last_name = db.Column(db.String(100), nullable=False)
@@ -30,6 +39,28 @@ class login(db.Model):
     gender = db.Column(db.String(10), nullable=False)
     email = db.Column(db.String(100), nullable=False)
     about = db.Column(db.String(100), nullable=False)
+
+    def __str__(self):
+         return f'{self.username}: {self.first_name}'
+
+@app.route("/login", methods=["GET", "POST"])
+def signin():
+    if request.method == 'POST':
+        pass
+        username = request.form.get('username').lower()
+        email = request.form.get('username')
+        password = request.form.get('password')
+        user = login.query.filter_by(username=username).first()
+        user1 = login.query.filter_by(email=email).first()
+        if user and user.password == password:
+            login_user(user)
+            return current_user.username
+        elif user1 and user1.password == password:
+            login_user(user1)
+            return current_user.username
+        else:
+            return 'Not Available.'
+    return render_template('login.html', title='Login')
 
 @app.route("/", methods=["GET", "POST"])
 def index():
