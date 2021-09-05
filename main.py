@@ -46,9 +46,8 @@ class login(UserMixin, db.Model):
 @app.route("/login", methods=["GET", "POST"])
 def signin():
     if request.method == 'POST':
-        pass
-        username = request.form.get('username').lower()
-        email = request.form.get('username')
+        username = request.form.get('uid').lower()
+        email = request.form.get('uid')
         password = request.form.get('password')
         user = login.query.filter_by(username=username).first()
         user1 = login.query.filter_by(email=email).first()
@@ -110,12 +109,25 @@ def verify():
             try:
                 db.session.add(info)
                 db.session.commit()
+                session.pop('random')
                 return 'Added'
             except:
                 return 'Something went wrong your credentials not uploaded.'
         else:
             return 'Wrong'
     return render_template('verify.html', title='Email verification', email=session.get('email'))
+
+@app.route("/forgot-password", methods=["GET", "POST"])
+def passwordemail():
+    if request.method == 'POST':
+        to = request.form.get('code')
+        N = 30
+        res = ''.join(random.choices(string.ascii_uppercase + string.digits, k = N))
+        session['password-change'] = res
+        content = "You can change your help4you account password from the following link :- https://help4you.herokuapp.com/change-password/"+str(res)
+        sendEmail(to, str(content))
+        return content
+    return render_template('password.html', title='Password Recovery')
 
 if __name__ == '__main__':
     app.run(debug=True)
