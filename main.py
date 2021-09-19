@@ -8,7 +8,7 @@ import smtplib
 
 app = Flask(__name__)
 sslify = SSLify(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://tRGvxd7v5H:gubRkugtXh@remotemysql.com/tRGvxd7v5H'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://kiympnjddnapxr:c3802988090175e2d6f23d27f2f8ef078d7dfea85a76968cb364d41ea72d7a13@ec2-54-154-101-45.eu-west-1.compute.amazonaws.com/d9h0lkg28n6udh'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "super-secret-key"
 db = SQLAlchemy(app)
