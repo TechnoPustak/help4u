@@ -48,9 +48,9 @@ a{
     background-color: rgba(255,255, 255, 1);
     height:500px;
     position:absolute;
-    top:-50px;
+    top:calc(50% - 250px);
     width:50%;
-    right:calc(50% - 50px);
+    right:25%;
     transition:.3s ease-in-out;
     z-index:0;
     box-shadow: 0 0 15px 9px #00000096;
@@ -157,14 +157,7 @@ $('.login-reg-panel input[type="radio"]').on('change', function() {
   
 	</script>
 </head>
-<body>
-<div class="login-reg-panel">			
-		<div class="register-info-box">
-			<h2>Don't have an account?</h2>
-			<label id="label-login" for="log-login-show"><a href='/signin' style='color:white'>Register</a></label>
-			<input type="radio" name="active-log-panel" id="log-login-show">
-		</div>
-							
+<body>				
 		<div class="white-panel">
 			<div class="login-show">
                 {% with messages = get_flashed_messages() %}
