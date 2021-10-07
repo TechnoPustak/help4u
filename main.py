@@ -1,4 +1,5 @@
 from flask_mail import Mail, Message
+import json
 from flask import Flask, render_template, request, session, url_for, flash, redirect
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
@@ -6,20 +7,29 @@ from flask_sslify import SSLify
 from itsdangerous import URLSafeTimedSerializer
 from itsdangerous.exc import BadSignature, SignatureExpired
 
+with open('config.json', 'r') as c:
+    params = json.load(c)["params"]
+    c.seek(0)
+    database = json.load(c)["database"]
+
 app = Flask(__name__)
+
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'factsworld1109@gmail.com'
-app.config['MAIL_PASSWORD'] = 'pnhnywcnwixzhhie'
+app.config['MAIL_USERNAME'] = params['email']
+app.config['MAIL_PASSWORD'] = params['email-password']
 app.config['MAIL_USE_SSL'] = True
 app.config['MAIL_USE_TLS'] = False
 mail = Mail(app)
+
 s = URLSafeTimedSerializer('my-secret')
 sslify = SSLify(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://kiympnjddnapxr:c3802988090175e2d6f23d27f2f8ef078d7dfea85a76968cb364d41ea72d7a13@ec2-54-154-101-45.eu-west-1.compute.amazonaws.com/d9h0lkg28n6udh'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = f"{database['app']}://{database['user']}:{database['password']}@{database['host']}/{database['database']}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "super-secret-key"
 db = SQLAlchemy(app)
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -58,7 +68,6 @@ def signin():
 
 @app.route("/", methods=["GET", "POST"])
 def signup():
-    lol = None
     if request.method == 'POST':
         session["username"] = request.form.get('username').lower()
         session["first_name"] = request.form.get('first_name')
@@ -83,7 +92,7 @@ def signup():
             msg.body = 'Your link is {} but go on this link from the same device used for registration.'.format(link)
             mail.send(msg)
             return render_template('box.html', email=email)
-    return render_template('signup.html', msg=lol, title='Sign up')
+    return render_template('signup.html', title = f"{params['title']}: Sign Up for a new account", params=params)
 
 @app.route("/verify/<token>")
 def verify(token):

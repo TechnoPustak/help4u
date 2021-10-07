@@ -4,12 +4,14 @@
     <!-- Required meta tags-->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Colorlib Templates">
-    <meta name="author" content="Colorlib">
-    <meta name="keywords" content="Colorlib Templates">
+    <meta name="title" content="{{ params['title'] }}">
+    <meta name="description" content="{{ params['description'] }}">
+    <meta name="author" content="{{ params['author'] }}">
+    <meta name="keywords" content="{{ params['keywords'] }}">
 
     <!-- Title Page-->
     <title>{{ title }}</title>
+    <link rel="icon" href="{{ url_for('static', filename='logo.ico') }}" type='ico/img'>
 
     <!-- Icons font CSS-->
     <link href="/static/vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
@@ -40,8 +42,10 @@
                     {% endfor %}
                     {% endif %}
                     {% endwith %}
-                    <h2 class="title">{{ title }}</h2>
-                    <h3 class="title">This website were you can ask questions and give answers about homeworks, study, or any other problems.</h3>
+                    <h1 class="title" style="color:rgba(192, 7, 248, 0.925); text-align:center;"><strong>{{ params['title'] }}<br> -- Beta Version</strong></h1>
+                    <img src="{{ url_for('static', filename='logo.png') }}" style="width:100px; margin: 0 auto; display: block;" id="icon" alt="Logo" /><br>
+                    <h2 class="title" style="text-align: center;">{{ title }}</h2>
+                    <h3 class="title">The website where you can ask questions and give answers about homeworks, study, or any other problems.</h3>
                     <form method="POST" action="/">
                         <div class="row row-space">
                             <div class="col-2">

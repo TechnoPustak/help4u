@@ -1,0 +1,17 @@
+{
+    "params":{
+        "title":"Help4You",
+        "description":"This is a helping website and will help you in any problem related to study or any other problems in life. And other people will also give you some tips / advices / answers for this. This is a new website and this is the beta version.",
+        "author":"Ashutosh Thakur",
+        "keywords":"help4you, help, helping, study, coding, programming, brainly, quora, study helper, reddit, help for you, help four you, helpforyou, helping hand",
+        "email":"factsworld1109@gmail.com",
+        "email-password":"pnhnywcnwixzhhie"
+    },
+    "database":{
+        "app":"postgresql",
+        "user":"kiympnjddnapxr",
+        "host":"ec2-54-154-101-45.eu-west-1.compute.amazonaws.com",
+        "database":"d9h0lkg28n6udh",
+        "password":"c3802988090175e2d6f23d27f2f8ef078d7dfea85a76968cb364d41ea72d7a13"
+    }
+}
