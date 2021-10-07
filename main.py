@@ -135,5 +135,9 @@ def changepass(token):
     except SignatureExpired:
         return 'False'
 
+@app.route("/google4a74fd24a326259f.html")
+def googlesearchverify():
+    return render_template('google4a74fd24a326259f.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
