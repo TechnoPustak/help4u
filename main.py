@@ -92,7 +92,7 @@ def signup():
             msg.body = 'Your link is {} but go on this link from the same device used for registration.'.format(link)
             mail.send(msg)
             return render_template('box.html', email=email)
-    return render_template('signup.html', title = f"{params['title']}: Sign Up for a new account", params=params)
+    return render_template('signup.html', title = f"{params['title']}", params=params)
 
 @app.route("/verify/<token>")
 def verify(token):
