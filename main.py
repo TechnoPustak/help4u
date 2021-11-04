@@ -94,6 +94,10 @@ def signup():
             return render_template('box.html', email=email)
     return render_template('signup.html', title = f"{params['title']}: Sign Up for a new account", params=params)
 
+@app.route('/dashboard')
+def dashboard():
+    return render_template("dashboard.html", params = params, title = f"{params['title']}: Ask and Answer Questions")
+
 @app.route("/verify/<token>")
 def verify(token):
     try:
