@@ -58,10 +58,10 @@ def signin():
         user1 = login.query.filter_by(email=email).first()
         if user and user.password == password:
             login_user(user)
-            return current_user.username
+            return redirect('/dashboard')
         elif user1 and user1.password == password:
             login_user(user1)
-            return current_user.username
+            return redirect('/dashboard')
         else:
             return 'Not Available.'
     return render_template('login.html', title='Login')
@@ -95,6 +95,7 @@ def signup():
     return render_template('signup.html', title = f"{params['title']}: Sign Up for a new account", params=params)
 
 @app.route('/dashboard')
+@login_required
 def dashboard():
     return render_template("dashboard.html", params = params, title = f"{params['title']}: Ask and Answer Questions")
 
@@ -142,6 +143,12 @@ def changepass(token):
 @app.route("/google4a74fd24a326259f.html")
 def googlesearchverify():
     return render_template('google4a74fd24a326259f.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect('/login')
 
 if __name__ == '__main__':
     app.run(debug=True)
