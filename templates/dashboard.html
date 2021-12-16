@@ -8,47 +8,95 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   <style>
-      .navlol {
-        background-color: #d19592;
-        background-image: linear-gradient(315deg, #d19592 0%, #c81f70 74%);
-        border-bottom: 2px solid black;
-      }
-      body {
-        background-color: #fc5296;
-        background-image: linear-gradient(315deg, #fc5296 0%, #f67062 74%); 
-        min-height: 100vh;
-      }
-      .noborder{
-          border: none;
-      }
-      .float{
-        position:fixed;
-        width:60px;
-        height:60px;
-        bottom:40px;
-        right:40px;
-        background-color:#0C9;
-        color:#FFF;
-        border-radius:50px;
-        text-align:center;
-        box-shadow: 2px 2px 3px #999;
-    }
+    .dbox {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
 
-    .question{
-        position:fixed;
-        width:auto;
-        height:auto;
-        bottom:60px;
-        right:110px;
-        background-color:#0C9;
-        color:#FFF;
-        border-radius:20px;
-        text-align:center;
-        box-shadow: 2px 2px 3px #999;
-    }
+/* dbox Content */
+.dbox-content {
+  background-color: #0bcdf3;
+  border-radius: 15px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* The quit Button */
+.quit {
+  color: #d505ff;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.quit:hover,
+.quit:focus {
+  color: rgb(140, 7, 250);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+  .navlol {
+    background-color: #d19592;
+    background-image: linear-gradient(315deg, #d19592 0%, #c81f70 74%);
+    border-bottom: 2px solid black;
+  }
+  body {
+    background-color: #fc5296;
+    background-image: linear-gradient(315deg, #fc5296 0%, #f67062 74%); 
+    min-height: 100vh;
+  }
+  .noborder{
+      border: none;
+  }
+  .float{
+    position:fixed;
+    border:none;
+    width:60px;
+    height:60px;
+    bottom:40px;
+    right:40px;
+    background-color:#0C9;
+    color:#FFF;
+    border-radius:50px;
+    text-align:center;
+    box-shadow: 2px 2px 3px #999;
+}
+
+.question{
+    position:fixed;
+    width:auto;
+    height:auto;
+    bottom:60px;
+    right:110px;
+    background-color:#0C9;
+    color:#FFF;
+    border-radius:20px;
+    text-align:center;
+    box-shadow: 2px 2px 3px #999;
+}
   </style>
 </head>
 <body>
+  <div id="mydbox" class="dbox">
+
+    <!-- dbox content -->
+    <div class="dbox-content">
+      <span class="quit">&times;</span>
+      <p>Some text in the dbox..</p>
+    </div>
+  
+  </div>
   <div class="container-fluid navlol">
     <div class="navbar-header" style=" text-align: center;">
       <a style="position: relative; top: 5px;" href="#"><img src="{{ url_for('static', filename='logo.png') }}" style="width: auto; height: 40px;" alt="Logo" /></a>
@@ -59,16 +107,43 @@
         <div class="input-group-btn">
           <button class="btn btn-default" type="submit">
             <i class="glyphicon glyphicon-search"></i>
-          </button><div style="display: inline-block; margin-left: 20px;"><img src="{{ url_for('static', filename='logo.png') }}" style="width: auto; height: 30px;" alt="Logo" /></div>
+          </button><div style="display: inline-block; margin-left: 20px;">{% if current_user.gender=='male' %}<img src="https://img.icons8.com/nolan/64/user-male-circle.png" height="32"/>{% else %}<img src="https://img.icons8.com/nolan/64/user-female-circle.png" height='32'/>{% endif %}</div>
         </div>
       </div>
     </form>
   </div>
   <div class='question'>&nbsp;Ask your question&nbsp;</div>
-  <a href="#" class="float">
+  <button id='myBtn' class="float">
     <svg xmlns="http://www.w3.org/2000/svg" width="50%" height="auto" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
       </svg>
-    </a>
+    </button>
+    <script>
+      // Get the dbox
+      var dbox = document.getElementById("mydbox");
+      
+      // Get the button that opens the dbox
+      var btn = document.getElementById("myBtn");
+      
+      // Get the <span> element that quits the dbox
+      var span = document.getElementsByClassName("quit")[0];
+      
+      // When the user clicks the button, open the dbox 
+      btn.onclick = function() {
+        dbox.style.display = "block";
+      }
+      
+      // When the user clicks on <span> (x), quit the dbox
+      span.onclick = function() {
+        dbox.style.display = "none";
+      }
+      
+      // When the user clicks anywhere outside of the dbox, quit it
+      window.onclick = function(event) {
+        if (event.target == dbox) {
+          dbox.style.display = "none";
+        }
+      }
+        </script>
 </body>
 </html>
