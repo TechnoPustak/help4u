@@ -23,8 +23,10 @@
 
 /* dbox Content */
 .dbox-content {
+  height: 80%;
   background-color: #0bcdf3;
   border-radius: 15px;
+  overflow: auto;
   margin: auto;
   padding: 20px;
   border: 1px solid #888;
@@ -92,8 +94,41 @@
 
     <!-- dbox content -->
     <div class="dbox-content">
-      <span class="quit">&times;</span>
-      <p>Some text in the dbox..</p>
+      <span class="quit">&times;</span><br>
+      <form action="/dashboard" method="POST">
+        <div class="form-group">
+          <label for="subject">Select Subject</label>
+          <select class="form-control" id="subject" name="subject" required>
+            <option disabled selected value="">Select Subject</option>
+            <option value="maths">Maths</option>
+            <option value="physics">Physics</option>
+            <option value="chemistry">Chemistry</option>
+            <option value="biology">Biology</option>
+            <option value="english">English</option>
+            <option value="hindi">Hindi</option>
+            <option value="sanskrit">Sanskrit</option>
+            <option value="sst">Social Science</option>
+            <option value="history">History</option>
+            <option value="geography">Geography</option>
+            <option value="civics">Political Science</option>
+            <option value="economics">Economics</option>
+            <option value="evs">Environmental Science</option>
+            <option value="science">Science</option>
+            <option value="cse">Computer Science</option>
+            <option value="language">Language</option>
+            <option value="art">Art</option>
+            <option value="music">Music</option>
+            <option value="commerce">Commerce</option>
+            <option value="technology">Technology</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="question">Your Question</label>
+          <textarea class="form-control" id="question" name="question" rows="5" style="resize: vertical;" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Submit</button>
+      </form>
     </div>
   
   </div>

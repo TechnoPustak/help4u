@@ -1,5 +1,5 @@
 from flask_mail import Mail, Message
-import json
+import json, time
 from flask import Flask, render_template, request, session, url_for, flash, redirect
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
@@ -48,6 +48,13 @@ class login(UserMixin, db.Model):
     gender = db.Column(db.String(10), nullable=False)
     email = db.Column(db.String(100), nullable=False)
 
+class posts(db.Model):
+    sno = db.Column(db.Integer, primary_key=True)
+    post = db.Column(db.String(20000), primary_key=False)
+    username = db.Column(db.String(100), primary_key=False)
+    subject = db.Column(db.String(100), primary_key=False)
+    time = db.Column(db.String(100), primary_key=False)
+
 @app.route("/login", methods=["GET", "POST"])
 def signin():
     if request.method == 'POST':
@@ -89,14 +96,21 @@ def signup():
             token = s.dumps(email, salt='email-confirm')
             msg = Message('Confirm Email', sender='factsworld1109@gmail.com', recipients=[email])
             link = url_for('verify', token=token, _external=True)
-            msg.body = 'Your link is {} but go on this link from the same device used for registration.'.format(link)
+            msg.body = 'Your link is {} but go on this link from the same device and browser used for registration.'.format(link)
             mail.send(msg)
             return render_template('box.html', email=email)
     return render_template('signup.html', title = f"{params['title']}: Sign Up for a new account", params=params)
 
-@app.route('/dashboard')
+@app.route('/dashboard', methods=["GET", "POST"])
 @login_required
 def dashboard():
+    if request.method=='POST':
+        username = current_user.username
+        post = request.form.get('question')
+        subject = request.form.get('subject')
+        info = posts(username=username, post=post, subject=subject, time=time.time())
+        db.session.add(info)
+        db.session.commit()
     return render_template("dashboard.html", params = params, title = f"{params['title']}: Ask and Answer Questions")
 
 @app.route("/verify/<token>")
