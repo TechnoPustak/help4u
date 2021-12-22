@@ -1,5 +1,5 @@
 from flask_mail import Mail, Message
-import json, time
+import json, time, convertcode
 from flask import Flask, render_template, request, session, url_for, flash, redirect
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
@@ -43,17 +43,18 @@ class login(UserMixin, db.Model):
     username = db.Column(db.String(100), primary_key=True)
     first_name = db.Column(db.String(100), nullable=False)
     last_name = db.Column(db.String(100), nullable=False)
-    password = db.Column(db.String(150), nullable=False)
+    password = db.Column(db.String(1000), nullable=False)
     birthday = db.Column(db.String(100), nullable=False)
     gender = db.Column(db.String(10), nullable=False)
     email = db.Column(db.String(100), nullable=False)
 
 class posts(db.Model):
     sno = db.Column(db.Integer, primary_key=True)
-    post = db.Column(db.String(20000), primary_key=False)
-    username = db.Column(db.String(100), primary_key=False)
-    subject = db.Column(db.String(100), primary_key=False)
-    time = db.Column(db.String(100), primary_key=False)
+    post = db.Column(db.String(20000), nullable=False)
+    username = db.Column(db.String(100), nullable=False)
+    subject = db.Column(db.String(100), nullable=False)
+    time = db.Column(db.String(100), nullable=False)
+    grade = db.Column(db.String(100), nullable=False)
 
 @app.route("/login", methods=["GET", "POST"])
 def signin():
@@ -63,10 +64,10 @@ def signin():
         password = request.form.get('password')
         user = login.query.filter_by(username=username).first()
         user1 = login.query.filter_by(email=email).first()
-        if user and user.password == password:
+        if user and convertcode.decodecode(user.password) == password:
             login_user(user)
             return redirect('/dashboard')
-        elif user1 and user1.password == password:
+        elif user1 and convertcode.decodecode(user1.password)== password:
             login_user(user1)
             return redirect('/dashboard')
         else:
@@ -108,7 +109,8 @@ def dashboard():
         username = current_user.username
         post = request.form.get('question')
         subject = request.form.get('subject')
-        info = posts(username=username, post=post, subject=subject, time=time.time())
+        grade = request.form.get('grade')
+        info = posts(username=username, post=post, subject=subject, time=time.time(), grade=grade)
         db.session.add(info)
         db.session.commit()
     return render_template("dashboard.html", params = params, title = f"{params['title']}: Ask and Answer Questions")
@@ -123,13 +125,14 @@ def verify(token):
         password = session.get('password')
         birthday = session.get('birthday')
         gender = session.get('gender')
-        info = login(username=username, first_name=first_name, last_name=last_name, password=password, birthday=birthday, gender=gender, email=email)
+        encpass = convertcode.convertcode(password)
+        info = login(username=username, first_name=first_name, last_name=last_name, password=encpass, birthday=birthday, gender=gender, email=email)
         db.session.add(info)
         db.session.commit()
         flash('Your account has been created successfully.')
         return redirect('/login')
     except SignatureExpired:
-        return 'Your link expired.'
+        return 'Your link has been expired.'
     except BadSignature:
         return 'No such link.'
 

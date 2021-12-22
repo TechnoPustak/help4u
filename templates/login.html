@@ -273,7 +273,15 @@ html {
 <div class="wrapper fadeInDown">
     <div id="formContent">
       <!-- Tabs Titles -->
-  
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      {% for message in messages %}
+      <div class="alert alert-success" style="width: 90%; margin: auto; top: 13px;" role="alert">
+          {{ message }}
+      </div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
       <!-- Icon -->
       <div class="fadeIn first">
         <br><img src="{{ url_for('static', filename='logo.png') }}" id="icon" alt="Logo" />
