@@ -71,8 +71,9 @@ def signin():
             login_user(user1)
             return redirect('/dashboard')
         else:
-            return 'Not Available.'
-    return render_template('login.html', title='Login')
+            flash('Entered Credentials are wrong.', 'danger')
+            return render_template('login.html', title='Login', params=params)
+    return render_template('login.html', title='Login', params=params)
 
 @app.route("/", methods=["GET", "POST"])
 def signup():
@@ -105,6 +106,7 @@ def signup():
 @app.route('/dashboard', methods=["GET", "POST"])
 @login_required
 def dashboard():
+    questions = posts.query.filter_by().all()
     if request.method=='POST':
         username = current_user.username
         post = request.form.get('question')
@@ -113,7 +115,8 @@ def dashboard():
         info = posts(username=username, post=post, subject=subject, time=time.time(), grade=grade)
         db.session.add(info)
         db.session.commit()
-    return render_template("dashboard.html", params = params, title = f"{params['title']}: Ask and Answer Questions")
+        return redirect('/dashboard')
+    return render_template("dashboard.html", params = params, title = f"{params['title']}: Ask and Answer Questions", questions=questions)
 
 @app.route("/verify/<token>")
 def verify(token):
@@ -129,7 +132,7 @@ def verify(token):
         info = login(username=username, first_name=first_name, last_name=last_name, password=encpass, birthday=birthday, gender=gender, email=email)
         db.session.add(info)
         db.session.commit()
-        flash('Your account has been created successfully.')
+        flash('Your account has been created successfully.', 'success')
         return redirect('/login')
     except SignatureExpired:
         return 'Your link has been expired.'

@@ -9,19 +9,17 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   <style>
     .dbox {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
+  display: none; 
+  position: fixed; 
+  z-index: 1; 
+  padding-top: 100px; 
   left: 0;
   top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  width: 100%; 
+  height: 100%; 
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4); 
 }
-
-/* dbox Content */
 .dbox-content {
   height: 80%;
   background-color: #0bcdf3;
@@ -32,60 +30,65 @@
   border: 1px solid #888;
   width: 80%;
 }
-
-/* The quit Button */
 .quit {
   color: #d505ff;
   float: right;
   font-size: 28px;
   font-weight: bold;
 }
-
 .quit:hover,
 .quit:focus {
   color: rgb(140, 7, 250);
   text-decoration: none;
   cursor: pointer;
 }
-
-  .navlol {
-    background-color: #d19592;
-    background-image: linear-gradient(315deg, #d19592 0%, #c81f70 74%);
-    border-bottom: 2px solid black;
-  }
-  body {
-    background-color: #fc5296;
-    background-image: linear-gradient(315deg, #fc5296 0%, #f67062 74%); 
-    min-height: 100vh;
-  }
-  .noborder{
-      border: none;
-  }
-  .float{
-    position:fixed;
-    border:none;
-    width:60px;
-    height:60px;
-    bottom:40px;
-    right:40px;
-    background-color:#0C9;
-    color:#FFF;
-    border-radius:50px;
-    text-align:center;
-    box-shadow: 2px 2px 3px #999;
+.navlol {
+  background-color: #d19592;
+  background-image: linear-gradient(315deg, #d19592 0%, #c81f70 74%);
+  border-bottom: 2px solid black;
+}
+body {
+  background-color: #fc5296;
+  background-image: linear-gradient(315deg, #fc5296 0%, #f67062 74%); 
+  min-height: 100vh;
+}
+.noborder{
+    border: none;
+}
+.float{
+  position:fixed;
+  border:none;
+  width:60px;
+  height:60px;
+  bottom:40px;
+  right:40px;
+  background-color:#0C9;
+  color:#FFF;
+  border-radius:50px;
+  text-align:center;
+  box-shadow: 2px 2px 3px #999;
 }
 
 .question{
-    position:fixed;
-    width:auto;
-    height:auto;
-    bottom:60px;
-    right:110px;
-    background-color:#0C9;
-    color:#FFF;
-    border-radius:20px;
-    text-align:center;
-    box-shadow: 2px 2px 3px #999;
+  position:fixed;
+  width:auto;
+  height:auto;
+  bottom:60px;
+  right:110px;
+  background-color:#0C9;
+  color:#FFF;
+  border-radius:20px;
+  text-align:center;
+  box-shadow: 2px 2px 3px #999;
+}
+
+.post{
+  background-color: white;
+  width: 98%;
+  margin: 5px auto;
+  padding: 10px;
+  border: solid 2px;
+  border-radius: 20px;
 }
   </style>
 </head>
@@ -95,44 +98,44 @@
     <!-- dbox content -->
     <div class="dbox-content">
       <span class="quit">&times;</span><br>
-      <form action="/dashboard" method="POST">
+      <form action="/dashboard" method="POST" >
         <div class="form-group">
           <label for="subject">Select Subject</label>
           <select class="form-control" id="subject" name="subject" required>
             <option disabled selected value="">Select Subject</option>
-            <option value="maths">Maths</option>
-            <option value="physics">Physics</option>
-            <option value="chemistry">Chemistry</option>
-            <option value="biology">Biology</option>
-            <option value="english">English</option>
-            <option value="hindi">Hindi</option>
-            <option value="sanskrit">Sanskrit</option>
-            <option value="sst">Social Science</option>
-            <option value="history">History</option>
-            <option value="geography">Geography</option>
-            <option value="civics">Political Science</option>
-            <option value="economics">Economics</option>
-            <option value="evs">Environmental Science</option>
-            <option value="science">Science</option>
-            <option value="cse">Computer Science</option>
-            <option value="language">Language</option>
-            <option value="art">Art</option>
-            <option value="music">Music</option>
-            <option value="commerce">Commerce</option>
-            <option value="technology">Technology</option>
-            <option value="other">Other</option>
+            <option value="Maths">Maths</option>
+            <option value="Physics">Physics</option>
+            <option value="Chemistry">Chemistry</option>
+            <option value="Biology">Biology</option>
+            <option value="English">English</option>
+            <option value="Hindi">Hindi</option>
+            <option value="Sanskrit">Sanskrit</option>
+            <option value="Social Science">Social Science</option>
+            <option value="History">History</option>
+            <option value="Geography">Geography</option>
+            <option value="Civics">Political Science</option>
+            <option value="Economics">Economics</option>
+            <option value="Environmental Science">Environmental Science</option>
+            <option value="Science">Science</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Labguage">Language</option>
+            <option value="Art">Art</option>
+            <option value="Music">Music</option>
+            <option value="Commerce">Commerce</option>
+            <option value="Technology">Technology</option>
+            <option value="Other">Other</option>
           </select>
         </div>
         <div class="form-group">
           <label for="grade">Select Grade</label>
           <select class="form-control" id="grade" name="grade" required>
             <option disabled selected value="">Select Grade</option>
-            <option value="nur">Nursury to UKG</option>
-            <option value="1-5">1 to 5</option>
-            <option value="6-8">6 to 8</option>
-            <option value="9-10">9 & 10</option>
-            <option value="11-12">11 & 12</option>
-            <option value="high">Higher Level</option>
+            <option value="Nursury to UKG">Nursury to UKG</option>
+            <option value="1 to 5">1 to 5</option>
+            <option value="6 to 8">6 to 8</option>
+            <option value="9 & 10">9 & 10</option>
+            <option value="11 & 12">11 & 12</option>
+            <option value="Higher Level">Higher Level</option>
           </select>
         </div>
         <div class="form-group">
@@ -159,38 +162,42 @@
       </div>
     </form>
   </div>
+  {% for question in questions %}
+    <div class="card post" style="background-color: #1fb8d7">
+      <h4 class="card-header">{{ question.username }}</h4>
+      <hr style="border-top: 1px solid #323131;">
+      <div class="card-body">
+        <h3 class="card-title">{{ question.post }}</h3>
+        <p class="card-text">Grade: {{ question.grade }}</p>
+        <p class="card-text">Subject: {{ question.subject }}</p>
+        <a href="#" class="btn btn-primary">Answer this question</a>
+      </div>
+    </div>
+    {% endfor %}
   <div class='question'>&nbsp;Ask your question&nbsp;</div>
   <button id='myBtn' class="float">
     <svg xmlns="http://www.w3.org/2000/svg" width="50%" height="auto" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
       </svg>
     </button>
-    <script>
-      // Get the dbox
-      var dbox = document.getElementById("mydbox");
-      
-      // Get the button that opens the dbox
-      var btn = document.getElementById("myBtn");
-      
-      // Get the <span> element that quits the dbox
-      var span = document.getElementsByClassName("quit")[0];
-      
-      // When the user clicks the button, open the dbox 
-      btn.onclick = function() {
-        dbox.style.display = "block";
-      }
-      
-      // When the user clicks on <span> (x), quit the dbox
-      span.onclick = function() {
-        dbox.style.display = "none";
-      }
-      
-      // When the user clicks anywhere outside of the dbox, quit it
-      window.onclick = function(event) {
-        if (event.target == dbox) {
-          dbox.style.display = "none";
-        }
-      }
-        </script>
+<script>
+var dbox = document.getElementById("mydbox");
+var btn = document.getElementById("myBtn");
+var span = document.getElementsByClassName("quit")[0];
+
+btn.onclick = function() {
+  dbox.style.display = "block";
+}
+
+span.onclick = function() {
+  dbox.style.display = "none";
+}
+
+window.onclick = function(event) {
+  if (event.target == dbox) {
+    dbox.style.display = "none";
+  }
+}
+  </script>
 </body>
 </html>
