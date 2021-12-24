@@ -47,6 +47,7 @@ class login(UserMixin, db.Model):
     birthday = db.Column(db.String(100), nullable=False)
     gender = db.Column(db.String(10), nullable=False)
     email = db.Column(db.String(100), nullable=False)
+    profile_pic = db.Column(db.String(), nullable=False)
 
 class posts(db.Model):
     sno = db.Column(db.Integer, primary_key=True)
@@ -55,6 +56,11 @@ class posts(db.Model):
     subject = db.Column(db.String(100), nullable=False)
     time = db.Column(db.String(100), nullable=False)
     grade = db.Column(db.String(100), nullable=False)
+
+@app.errorhandler(401)
+def unauthorized(e):
+    flash('You are not logged in.', 'danger')
+    return redirect('/login')
 
 @app.route("/login", methods=["GET", "POST"])
 def signin():
@@ -107,6 +113,7 @@ def signup():
 @login_required
 def dashboard():
     questions = posts.query.filter_by().all()
+    users = login.query.filter_by().all()
     if request.method=='POST':
         username = current_user.username
         post = request.form.get('question')
@@ -116,7 +123,7 @@ def dashboard():
         db.session.add(info)
         db.session.commit()
         return redirect('/dashboard')
-    return render_template("dashboard.html", params = params, title = f"{params['title']}: Ask and Answer Questions", questions=questions)
+    return render_template("dashboard.html",params=params,title=f"{params['title']}: Ask and Answer Questions",questions=questions,users=users,time=time.time())
 
 @app.route("/verify/<token>")
 def verify(token):
@@ -129,7 +136,8 @@ def verify(token):
         birthday = session.get('birthday')
         gender = session.get('gender')
         encpass = convertcode.convertcode(password)
-        info = login(username=username, first_name=first_name, last_name=last_name, password=encpass, birthday=birthday, gender=gender, email=email)
+        profile_pic = 'https://help4you.herokuapp.com/static/profile.png'
+        info = login(username=username, first_name=first_name, last_name=last_name, password=encpass, birthday=birthday, gender=gender, email=email, profile_pic=profile_pic)
         db.session.add(info)
         db.session.commit()
         flash('Your account has been created successfully.', 'success')
@@ -168,6 +176,7 @@ def googlesearchverify():
 @login_required
 def logout():
     logout_user()
+    flash('You has been logged out successfully. ', 'success')
     return redirect('/login')
 
 if __name__ == '__main__':

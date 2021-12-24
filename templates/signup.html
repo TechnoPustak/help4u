@@ -17,7 +17,9 @@
     <link href="/static/vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
 
     <!-- Font special for pages-->
-    <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
 
     <!-- Vendor CSS-->
     <link href="/static/vendor/select2/select2.min.css" rel="stylesheet" media="all">
@@ -25,7 +27,7 @@
 
     <!-- Main CSS-->
     <link href="/static/css/main.css" rel="stylesheet" media="all">
-    
+
 </head>
 
 <body>
@@ -42,10 +44,13 @@
                     {% endfor %}
                     {% endif %}
                     {% endwith %}
-                    <h1 class="title" style="color:rgba(192, 7, 248, 0.925); text-align:center;"><strong>{{ params['title'] }}<br> -- Beta Version</strong></h1>
-                    <img src="{{ url_for('static', filename='logo.png') }}" style="width:100px; margin: 0 auto; display: block;" id="icon" alt="Logo" /><br>
+                    <h1 class="title" style="color:rgba(192, 7, 248, 0.925); text-align:center;"><strong>{{
+                            params['title'] }}<br> -- Beta Version</strong></h1>
+                    <img src="{{ url_for('static', filename='logo.png') }}"
+                        style="width:100px; margin: 0 auto; display: block;" id="icon" alt="Logo" /><br>
                     <h2 class="title" style="text-align: center;">{{ title }}</h2>
-                    <h3 class="title">The website where you can ask questions and give answers about homeworks, study, or any other problems.</h3>
+                    <h3 class="title">The website where you can ask questions and give answers about homeworks, study,
+                        or any other problems.</h3>
                     <form method="POST" action="/">
                         <div class="row row-space">
                             <div class="col-2">
@@ -63,7 +68,8 @@
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">first name</label>
-                                    <input class="input--style-4" type="text" name="first_name" id="first_name" required>
+                                    <input class="input--style-4" type="text" name="first_name" id="first_name"
+                                        required>
                                 </div>
                             </div>
                             <div class="col-2">
@@ -78,7 +84,8 @@
                                 <div class="input-group">
                                     <label class="label">Birthday</label>
                                     <div class="input-group-icon">
-                                        <input class="input--style-4 js-datepicker" type="text" name="birthday" id="birthday" required>
+                                        <input class="input--style-4 js-datepicker" type="text" name="birthday"
+                                            id="birthday" required>
                                         <i class="zmdi zmdi-calendar-note input-icon js-btn-calendar"></i>
                                     </div>
                                 </div>
@@ -88,7 +95,8 @@
                                     <label class="label">Gender</label>
                                     <div class="p-t-10">
                                         <label class="radio-container m-r-45">Male
-                                            <input type="radio" checked="checked" name="gender" id="gender" value="male" required>
+                                            <input type="radio" checked="checked" name="gender" id="gender" value="male"
+                                                required>
                                             <span class="checkmark"></span>
                                         </label>
                                         <label class="radio-container">Female
@@ -103,13 +111,15 @@
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">password</label>
-                                    <input class="input--style-4" type="password" name="password" id="password" required>
+                                    <input class="input--style-4" type="password" name="password" id="password"
+                                        required>
                                 </div>
                             </div>
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">repeat password</label>
-                                    <input class="input--style-4" type="password" name="rpassword" id="rpassword" required>
+                                    <input class="input--style-4" type="password" name="rpassword" id="rpassword"
+                                        required>
                                 </div>
                             </div>
                         </div>
@@ -118,18 +128,21 @@
                             <button class="btn btn--radius-2 btn--blue" type="submit">Submit</button>
                         </div>
                     </form><br>
-                    <a href='/login'><button style='cursor: pointer; border-radius: 4px; background-color: #008CBA; font-size: 20px; padding: 12px 28px;'>Already Have an Account</button></a>
+                    <a href='/login'><button
+                            style='cursor: pointer; border-radius: 4px; background-color: #008CBA; font-size: 20px; padding: 12px 28px;'>Already
+                            Have an Account</button></a>
                 </div>
             </div>
         </div>
     </div>
- <!-- Jquery JS-->
-<script src="/static/vendor/jquery/jquery.min.js"></script>
-<!-- Vendor JS-->
-<script src="/static/vendor/datepicker/moment.min.js"></script>
-<script src="/static/vendor/datepicker/daterangepicker.js"></script>
+    <!-- Jquery JS-->
+    <script src="/static/vendor/jquery/jquery.min.js"></script>
+    <!-- Vendor JS-->
+    <script src="/static/vendor/datepicker/moment.min.js"></script>
+    <script src="/static/vendor/datepicker/daterangepicker.js"></script>
 
-<!-- Main JS-->
-<script src="/static/js/global.js"></script>
+    <!-- Main JS-->
+    <script src="/static/js/global.js"></script>
 </body>
+
 </html>
