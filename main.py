@@ -51,15 +51,21 @@ class login(UserMixin, db.Model):
 
 class posts(db.Model):
     sno = db.Column(db.Integer, primary_key=True)
-    post = db.Column(db.String(20000), nullable=False)
+    post = db.Column(db.String(50000), nullable=False)
     username = db.Column(db.String(100), nullable=False)
     subject = db.Column(db.String(100), nullable=False)
     time = db.Column(db.String(100), nullable=False)
     grade = db.Column(db.String(100), nullable=False)
 
+class answers(db.Model):
+    sno = db.Column(db.Integer, primary_key=True)
+    answer = db.Column(db.String(50000), nullable=False)
+    username = db.Column(db.String(100), nullable=False)
+    question_id = db.Column(db.String(100), nullable=False)
+    time = db.Column(db.String(100), nullable=False)
+
 @app.errorhandler(401)
 def unauthorized(e):
-    flash('You are not logged in.', 'danger')
     return redirect('/login')
 
 @app.route("/login", methods=["GET", "POST"])
@@ -71,10 +77,10 @@ def signin():
         user = login.query.filter_by(username=username).first()
         user1 = login.query.filter_by(email=email).first()
         if user and convertcode.decodecode(user.password) == password:
-            login_user(user)
+            login_user(user, remember=True)
             return redirect('/dashboard')
         elif user1 and convertcode.decodecode(user1.password)== password:
-            login_user(user1)
+            login_user(user1, remember=True)
             return redirect('/dashboard')
         else:
             flash('Entered Credentials are wrong.', 'danger')
@@ -123,7 +129,24 @@ def dashboard():
         db.session.add(info)
         db.session.commit()
         return redirect('/dashboard')
-    return render_template("dashboard.html",params=params,title=f"{params['title']}: Ask and Answer Questions",questions=questions,users=users,time=time.time())
+    return render_template("dashboard.html",title=f"{params['title']}: Ask and Answer Questions",questions=questions,users=users,time=time.time())
+
+@app.route('/answer/<int:sno>', methods=["GET", "POST"])
+@login_required
+def answer(sno):
+    users = login.query.filter_by().all()
+    question = posts.query.filter_by(sno=sno).first()
+    myanswers = answers.query.filter_by(question_id=str(sno)).all()
+    if request.method =='POST':
+        myanswer = request.form.get('answer')
+        answer_info = answers(answer=myanswer, username=current_user.username, question_id=sno, time=time.time())
+        db.session.add(answer_info)
+        db.session.commit()
+        return redirect('/answer/'+str(sno))
+    if question:
+        return render_template('answer.html',title=f"{params['title']}: Give Answers", question=question, time=time.time(), users=users, sno=sno, answers=myanswers)
+    else:
+        return redirect('/dashboard')
 
 @app.route("/verify/<token>")
 def verify(token):

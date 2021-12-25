@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>{{ title }}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="{{ url_for('static', filename='logo.ico') }}" type='ico/img'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style>
+    body {
+      background-color: #fc5296;
+      background-image: linear-gradient(315deg, #fc5296 0%, #f67062 74%);
+      min-height: 100vh;
+      margin-bottom: 10%;
+    }
+    .navlol {
+      background-color: #d19592;
+      background-image: linear-gradient(315deg, #d19592 0%, #c81f70 74%);
+      border-bottom: 2px solid black;
+    }
+    .noborder {
+      border: none;
+    }
+    .post {
+      background-color: #1fb8d7;
+      width: 95%;
+      margin: 5px auto;
+      padding: 10px;
+      border-radius: 20px;
+    }
+{% block body %}{% endblock %}
+</body>
+</html>

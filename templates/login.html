@@ -1,26 +1,18 @@
 {% extends "layout.html" %}
 {% block body %}
 <style>
-  /* BASIC */
-
-  html {
-    background-color: #f812f8;
-  }
-
   body {
     font-family: "Poppins", sans-serif;
     height: 100vh;
     background-color: #fc5296;
     background-image: linear-gradient(315deg, #fc5296 0%, #f67062 74%);
   }
-
   a {
     color: #92badd;
     display: inline-block;
     text-decoration: none;
     font-weight: 400;
   }
-
   h2 {
     text-align: center;
     font-size: 16px;
@@ -30,11 +22,6 @@
     margin: 40px 8px 10px 8px;
     color: #cccccc;
   }
-
-
-
-  /* STRUCTURE */
-
   .wrapper {
     display: flex;
     align-items: center;
@@ -44,7 +31,6 @@
     min-height: 100%;
     padding: 20px;
   }
-
   #formContent {
     -webkit-border-radius: 10px 10px 10px 10px;
     border-radius: 10px 10px 10px 10px;
@@ -58,7 +44,6 @@
     box-shadow: 0 30px 60px 0 rgba(0, 0, 0, 0.3);
     text-align: center;
   }
-
   #formFooter {
     background-color: #f6f6f6;
     border-top: 1px solid #dce8f1;
@@ -67,24 +52,13 @@
     -webkit-border-radius: 0 0 10px 10px;
     border-radius: 0 0 10px 10px;
   }
-
-
-
-  /* TABS */
-
   h2.inactive {
     color: #cccccc;
   }
-
   h2.active {
     color: #0d0d0d;
     border-bottom: 2px solid #5fbae9;
   }
-
-
-
-  /* FORM TYPOGRAPHY*/
-
   input[type=button],
   input[type=submit],
   input[type=reset] {
@@ -92,7 +66,7 @@
     border: none;
     color: white;
     width: 50%;
-    padding: 15px 80px;
+    padding: 15px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
@@ -109,13 +83,11 @@
     -o-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out;
   }
-
   input[type=button]:hover,
   input[type=submit]:hover,
   input[type=reset]:hover {
     background-color: #b30eff;
   }
-
   input[type=button]:active,
   input[type=submit]:active,
   input[type=reset]:active {
@@ -125,7 +97,6 @@
     -ms-transform: scale(0.95);
     transform: scale(0.95);
   }
-
   input[type=text],
   input[type=password] {
     background-color: #f6f6f6;
@@ -147,23 +118,15 @@
     -webkit-border-radius: 5px 5px 5px 5px;
     border-radius: 5px 5px 5px 5px;
   }
-
   input[type=text]:focus,
   input[type=password]:focus {
     background-color: #fff;
     border-bottom: 2px solid #d95fe9;
   }
-
   input[type=text]:placeholder,
   input[type=password]:placeholder {
     color: #2cb4dd;
   }
-
-
-
-  /* ANIMATIONS */
-
-  /* Simple CSS3 Fade-in-down Animation */
   .fadeInDown {
     -webkit-animation-name: fadeInDown;
     animation-name: fadeInDown;
@@ -172,7 +135,6 @@
     -webkit-animation-fill-mode: both;
     animation-fill-mode: both;
   }
-
   @-webkit-keyframes fadeInDown {
     0% {
       opacity: 0;
@@ -201,7 +163,6 @@
     }
   }
 
-  /* Simple CSS3 Fade-in Animation */
   @-webkit-keyframes fadeIn {
     from {
       opacity: 0;
@@ -270,8 +231,6 @@
     -moz-animation-delay: 1s;
     animation-delay: 1s;
   }
-
-  /* Simple CSS3 Fade-in Animation */
   .underlineHover:after {
     display: block;
     left: 0;
@@ -290,11 +249,6 @@
   .underlineHover:hover:after {
     width: 100%;
   }
-
-
-
-  /* OTHERS */
-
   *:focus {
     outline: none;
   }
@@ -304,7 +258,6 @@
   }
 </style>
 </head>
-
 <body>
   <div class="wrapper fadeInDown">
     <div id="formContent">
