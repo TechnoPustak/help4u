@@ -10,7 +10,7 @@ from flask_sslify import SSLify
 from itsdangerous import URLSafeTimedSerializer
 from itsdangerous.exc import BadSignature, SignatureExpired
 
-with open('configuration\\config.json', 'r') as c:
+with open('config.json', 'r') as c:
     params = json.load(c)["params"]
     c.seek(0)
     database = json.load(c)["database"]
