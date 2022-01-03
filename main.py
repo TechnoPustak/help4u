@@ -1,6 +1,7 @@
 from flask_mail import Mail, Message
 import json
 import time
+from calendar import month_name
 import convertcode
 from flask import Flask, render_template, request, session, url_for, flash, redirect
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
@@ -9,7 +10,7 @@ from flask_sslify import SSLify
 from itsdangerous import URLSafeTimedSerializer
 from itsdangerous.exc import BadSignature, SignatureExpired
 
-with open('config.json', 'r') as c:
+with open('configuration\\config.json', 'r') as c:
     params = json.load(c)["params"]
     c.seek(0)
     database = json.load(c)["database"]
@@ -40,14 +41,15 @@ login_manager.init_app(app)
 
 
 @login_manager.user_loader
-def load_user(username):
-    return login.query.get(username)
+def load_user(sno):
+    return login.query.get(sno)
 
 
 class login(UserMixin, db.Model):
     def get_id(self):
-        return (self.username)
-    username = db.Column(db.String(100), primary_key=True)
+        return (self.sno)
+    sno = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(100), nullable=False)
     first_name = db.Column(db.String(100), nullable=False)
     last_name = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(1000), nullable=False)
@@ -55,12 +57,14 @@ class login(UserMixin, db.Model):
     gender = db.Column(db.String(10), nullable=False)
     email = db.Column(db.String(100), nullable=False)
     profile_pic = db.Column(db.String(), nullable=False)
+    time = db.Column(db.String(100), nullable=False)
+    about = db.Column(db.String(), nullable=True)
 
 
 class posts(db.Model):
     sno = db.Column(db.Integer, primary_key=True)
     post = db.Column(db.String(50000), nullable=False)
-    username = db.Column(db.String(100), nullable=False)
+    user = db.Column(db.Integer, nullable=False)
     subject = db.Column(db.String(100), nullable=False)
     time = db.Column(db.String(100), nullable=False)
     grade = db.Column(db.String(100), nullable=False)
@@ -69,7 +73,7 @@ class posts(db.Model):
 class answers(db.Model):
     sno = db.Column(db.Integer, primary_key=True)
     answer = db.Column(db.String(50000), nullable=False)
-    username = db.Column(db.String(100), nullable=False)
+    user = db.Column(db.Integer, nullable=False)
     question_id = db.Column(db.String(100), nullable=False)
     time = db.Column(db.String(100), nullable=False)
 
@@ -137,11 +141,11 @@ def dashboard():
     questions = posts.query.filter_by().all()
     users = login.query.filter_by().all()
     if request.method == 'POST':
-        username = current_user.username
+        username = current_user.sno
         post = request.form.get('question')
         subject = request.form.get('subject')
         grade = request.form.get('grade')
-        info = posts(username=username, post=post,
+        info = posts(user=username, post=post,
                      subject=subject, time=time.time(), grade=grade)
         db.session.add(info)
         db.session.commit()
@@ -158,7 +162,7 @@ def answer(sno):
     if request.method == 'POST':
         myanswer = request.form.get('answer')
         answer_info = answers(
-            answer=myanswer, username=current_user.username, question_id=sno, time=time.time())
+            answer=myanswer, user=current_user.sno, question_id=sno, time=time.time())
         db.session.add(answer_info)
         db.session.commit()
         return redirect('/answer/'+str(sno))
@@ -167,6 +171,44 @@ def answer(sno):
     else:
         return redirect('/dashboard')
 
+
+@app.route('/account/<string:username>')
+def account(username):
+    user = login.query.filter_by(username=username).first()
+    timep = time.localtime(int(float(user.time)))
+    joined = f'{timep.tm_mday} {month_name[timep.tm_mon]}, {timep.tm_year}'
+    bday = user.birthday.split('/')
+    birthday = f'{bday[0]} {month_name[int(bday[1])]}, {bday[-1]}'
+    if user:
+        return render_template('account.html', title=f'Account: {user.username}', user=user, joined=joined, birthday=birthday)
+    else:
+        return 'Not Available.'
+
+
+@app.route('/settings', methods=["GET", "POST"])
+@login_required
+def settings():
+    if request.method=='POST':
+        username = request.form.get('username')
+        email = request.form.get('email')
+        user1 = login.query.filter_by(username=username).first()
+        user2 = login.query.filter_by(email=email).first()
+        if username != current_user.username and user1!=None:
+            flash('Username Used.')
+        elif email != current_user.email and user2!=None:
+            flash('Already an account with this email.')
+        else:
+            user = login.query.filter_by(sno=current_user.sno).first()
+            user.username = username
+            user.email = email
+            user.first_name = request.form.get('first_name')
+            user.last_name = request.form.get('last_name')
+            user.gender = request.form.get('gender')
+            user.birthday = request.form.get('birthday')
+            user.about = request.form.get('about')
+            db.session.commit()
+        return redirect('/settings')
+    return render_template('settings.html', params=params, title=f'{params["title"]} : Settings')
 
 @app.route("/verify/<token>")
 def verify(token):
@@ -181,7 +223,7 @@ def verify(token):
         encpass = convertcode.convertcode(password)
         profile_pic = statics['profile_pic']
         info = login(username=username, first_name=first_name, last_name=last_name, password=encpass,
-                     birthday=birthday, gender=gender, email=email, profile_pic=profile_pic)
+                     birthday=birthday, gender=gender, email=email, profile_pic=profile_pic, time=time.time())
         db.session.add(info)
         db.session.commit()
         flash('Your account has been created successfully.', 'success')

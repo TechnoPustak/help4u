@@ -32,51 +32,59 @@
 </head>
 
 <body>
-    <div class="page-wrapper bg-gra-02 p-t-130 p-b-100 font-poppins">
+
+    <div class="page-wrapper bg-gra-01 p-t-130 p-b-100 font-poppins">
         <div class="wrapper wrapper--w680">
             <div class="card card-4">
                 <div class="card-body">
-                    {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                    {% for message in messages %}
-                    <div class="alert alert-danger" role="alert">
-                        {{ message }}
-                    </div>
-                    {% endfor %}
-                    {% endif %}
-                    {% endwith %}
-                    <h1 class="title" style="color:rgba(192, 7, 248, 0.925); text-align:center;"><strong>{{
-                            params['title'] }}<br> -- Beta Version</strong></h1>
-                    <img src="{{ url_for('static', filename='logo.png') }}"
-                        style="width:100px; margin: 0 auto; display: block;" id="icon" alt="Logo" /><br>
-                    <h2 class="title" style="text-align: center;">{{ title }}</h2>
-                    <h3 class="title">The website where you can ask questions and give answers about homeworks, study,
-                        or any other problems.</h3>
-                    <form method="POST" action="/">
+                    <h1 class="title" style="color:rgba(192, 7, 248, 0.925); text-align:center;">
+                        <strong>Settings</strong>
+                    </h1>
+                    <h3 class="title" style="text-align: center;">Configure your account details.</h3>
+
+
+                    <form method="POST" action="/settings">
+                        <div class="row row-space">
+                            <label class="custom-file-upload label">
+                                <input type="file" accept="image/*"
+                                    onchange="document.getElementById('profile_pic').src = window.URL.createObjectURL(this.files[0])" />
+                                <div style="position: relative; left: 0; top: 0;">
+                                    <img src="{{ current_user.profile_pic }}" class='mypic'
+                                        style="width:100px; margin: 0 auto; display: block;" id="profile_pic"
+                                        alt="Logo" />
+                                    <img src="{{ url_for('static', filename='images/edit.png') }}" class="myoverlay"
+                                        alt="Logo" />
+                                </div>
+                            </label>
+                        </div><br>
+                        <h4 class="title" style="text-align: center;">Change Your Profile Pic</h4>
                         <div class="row row-space">
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">Username</label>
-                                    <input class="input--style-4" type="text" name="username" id="username" required>
+                                    <input class="input--style-4" type="text" name="username" id="username"
+                                        value="{{ current_user.username }}" required>
                                 </div>
                             </div>
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">Email</label>
-                                    <input class="input--style-4" type="email" name="email" id="email" required>
+                                    <input class="input--style-4" type="email" name="email" id="email"
+                                        value="{{ current_user.email}}" required>
                                 </div>
                             </div>
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">first name</label>
                                     <input class="input--style-4" type="text" name="first_name" id="first_name"
-                                        required>
+                                        value="{{ current_user.first_name }}" required>
                                 </div>
                             </div>
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">last name</label>
-                                    <input class="input--style-4" type="text" name="last_name" id="last_name" required>
+                                    <input class="input--style-4" type="text" name="last_name" id="last_name"
+                                        value="{{ current_user.last_name }}" required>
                                 </div>
                             </div>
                         </div>
@@ -86,7 +94,7 @@
                                     <label class="label">Birthday</label>
                                     <div class="input-group-icon">
                                         <input class="input--style-4 js-datepicker" type="text" name="birthday"
-                                            id="birthday" required>
+                                            id="birthday" value="{{ current_user.birthday }}" required>
                                         <i class="zmdi zmdi-calendar-note input-icon js-btn-calendar"></i>
                                     </div>
                                 </div>
@@ -95,6 +103,7 @@
                                 <div class="input-group">
                                     <label class="label">Gender</label>
                                     <div class="p-t-10">
+                                        {% if current_user.gender == 'male' %}
                                         <label class="radio-container m-r-45">Male
                                             <input type="radio" checked="checked" name="gender" id="gender" value="male"
                                                 required>
@@ -104,33 +113,62 @@
                                             <input type="radio" name="gender" id='gender' value="female" required>
                                             <span class="checkmark"></span>
                                         </label>
+                                        {% else %}
+                                        <label class="radio-container m-r-45">Male
+                                            <input type="radio" name="gender" id="gender" value="male" required>
+                                            <span class="checkmark"></span>
+                                        </label>
+                                        <label class="radio-container">Female
+                                            <input type="radio" checked="checked" name="gender" id='gender'
+                                                value="female" required>
+                                            <span class="checkmark"></span>
+                                        </label>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         <div class="row row-space">
+                            <div class="form-group" style="flex: 0 0 100%;">
+                                <label for="about" class="label">About: </label>
+                                <textarea style="resize: vertical;" class="mytext"
+                                    placeholder="Give a little decription about you" class="form-control" name="about"
+                                    id="about" rows="3">{{ current_user.about }}</textarea>
+                            </div>
+                        </div>
+                        <div class="p-t-15">
+                            <button class="btn btn--radius-2 btn--blue" type="submit">Submit</button>
+                        </div><br>
+                    </form>
+                    <hr><br>
+                    <h4 class="title" style="text-align: center;">Change Your Password</h4>
+                    <form method="POST" action="/changemypass">
+                        <div class="row row-space">
+                            <div class="col-2" style="flex: 0 0 100%;">
+                                <div class="input-group">
+                                    <label class="label">Current Password</label>
+                                    <input class="input--style-4" type="email" name="email" id="email" required>
+                                </div>
+                            </div>
                             <div class="col-2">
                                 <div class="input-group">
-                                    <label class="label">password</label>
-                                    <input class="input--style-4" type="password" name="password" id="password"
+                                    <label class="label">New Password</label>
+                                    <input class="input--style-4" type="text" name="first_name" id="first_name"
                                         required>
                                 </div>
                             </div>
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">repeat password</label>
-                                    <input class="input--style-4" type="password" name="rpassword" id="rpassword"
-                                        required>
+                                    <input class="input--style-4" type="text" name="last_name" id="last_name" required>
                                 </div>
                             </div>
+                            <div class="p-t-15">
+                                <button class="btn btn--radius-2 btn--blue" type="submit">Submit</button>
+                            </div>
                         </div>
-                        <div class="p-t-15">
-                            <button class="btn btn--radius-2 btn--blue" type="submit">Submit</button>
-                        </div>
-                    </form><br>
-                    <a href='/login'><button
-                            style='cursor: pointer; border-radius: 4px; background-color: #008CBA; font-size: 20px; padding: 12px 28px;'>Already
-                            Have an Account</button></a>
+                    </form>
                 </div>
             </div>
         </div>

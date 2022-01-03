@@ -1,86 +1,87 @@
 {% extends "layout2.html" %}
 {% block body %}
-.answer {
-background-color: #3bf3c8;
-width: 95%;
-margin: 5px auto;
-padding: 10px;
-border-radius: 20px;
-}
+  .answer {
+    background-color: #abe9cd;
+    background-image: linear-gradient(315deg, #abe9cd 0%, #3eadcf 74%);
+    width: 95%;
+    margin: 5px auto;
+    padding: 10px;
+    border-radius: 20px;
+  }
 </style>
 </head>
 
 <body>
-    <div class="container-fluid navlol">
-        <div class="navbar-header mynav">
-          <a class='tlink' href="/dashboard"><img src="{{ url_for('static', filename='logo.png') }}"
-              style="width: auto; height: 40px;" alt="Logo" /><strong> Help4You</strong></a>
-        </div>
-        <form class="navbar-form navbar-right noborder">
-          <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search is in construction" name="search">
-            <div class="input-group-btn">
-              <button type="submit" class="search"><svg style="height: 36px; width: 21px;"
-                  xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                  <path
-                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                </svg></button>
-            </div>
-            <div class="dropdown" style="cursor: pointer;">
-              <div style="display: inline-block; margin-left: 20px;" class="dropdown-toggle" data-bs-toggle="dropdown">
-                <img alt='Your profile pic.' src=" {{ current_user.profile_pic }} " height="32" />
-              </div>
-              <ul class="dropdown-menu mydrop fadeIn" aria-labelledby="dropdownMenu">
-                <li><a class="dropdown-item myitem" href="#">Account</a></li>
-                <li><a class="dropdown-item myitem" href="#">Another action</a></li>
-                <li><a class="dropdown-item myitem" href="#">Something else here</a></li>
-              </ul>
-            </div>
-    
-          </div>
-        </form>
-      </div>
-    <div class="card post">
-        <h4 class="card-header" style="border-bottom: black solid 1px;">
-            {% for user in users %}{% if user.username == question.username %}
-            <img alt="User's profile pic." src=" {{ user.profile_pic }} " height="32" /> {{ user.first_name }} {{
-            user.last_name }} &bull; {{ question.subject }} &bull;
-            {% set qtime = time|int-question.time|int %}
-            {% if qtime < 60 %} {{ qtime|int }} Seconds {% elif qtime < 3600 %} {{ (qtime/60)|int }} Minutes {% elif
-                qtime < 86400 %} {{ (qtime/3600)|int }} Hours {% elif qtime < 2628288 %} {{ (qtime/86400)|int }} Days {%
-                elif qtime < 31536000 %} {{ (qtime/2628288)|int }} Months {% else %} {{ (qtime/31536000)|int }} Years {%
-                endif %} Ago {% endif %}{% endfor %} </h4>
-                <div class="card-body">
-                    <h3 class="card-title">{% for line in question.post.splitlines() %}{{ line }}<br>{% endfor %}</h3>
-                    <p class="card-text"><strong> Grade: {{ question.grade }}</strong></p>
-                    <form action="/answer/{{ sno }}" method="POST">
-                        <div class="form-group">
-                            <label for="answer" style="font-size: 20px;"><strong>Enter your answer here:
-                                </strong></label><br>
-                            <textarea class="form-control" id="answer" name="answer" rows="5"
-                                style="resize: vertical; font-size: 23px;" required></textarea>
-                        </div><br>
-                        <button type="submit" class="btn btn-success">Submit</button>
-                    </form>
-                </div>
-    </div><br>
-    <h2 class="card-title" style="margin-left: 3%;"><strong>Answers: </strong></h2>
-    {% for answer in answers|reverse %}
-    <div class="card answer">
-        <h4 class="card-header">
-            {% for user in users %}{% if user.username == answer.username %}
-            <img alt="User's profile pic." src=" {{ user.profile_pic }} " height="32" /> {{ user.first_name
-            }} {{
-            user.last_name }} &bull;
-            {% set qtime = time|int-answer.time|int %}
-            {% if qtime < 60 %} {{ qtime|int }} Seconds {% elif qtime < 3600 %} {{ (qtime/60)|int }} Minutes {% elif
-                qtime < 86400 %} {{ (qtime/3600)|int }} Hours {% elif qtime < 2628288 %} {{ (qtime/86400)|int }} Days {%
-                elif qtime < 31536000 %} {{ (qtime/2628288)|int }} Months {% else %} {{ (qtime/31536000)|int }} Years {%
-                endif %} Ago {% endif %}{% endfor %} </h4>
-                <div class="card-body">
-                    <h4 class="card-title">{% for line in answer.answer.splitlines() %}{{ line }}<br>{%
-                        endfor %}</h4>
-                </div>
+  <div class="container-fluid navlol">
+    <div class="navbar-header mynav">
+      <a class='tlink' href="/dashboard"><img src="{{ url_for('static', filename='logo.png') }}"
+          style="width: auto; height: 40px;" alt="Logo" /><strong> Help4You</strong></a>
     </div>
-    {% endfor %}
-    {% endblock %}
+    <form class="navbar-form navbar-right noborder">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Search is in construction" name="search">
+        <div class="input-group-btn">
+          <button type="submit" class="search"><svg style="height: 36px; width: 21px;"
+              xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+              <path
+                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+            </svg></button>
+        </div>
+        <div class="dropdown" style="cursor: pointer;">
+          <div style="display: inline-block; margin-left: 20px;" class="dropdown-toggle" data-bs-toggle="dropdown">
+            <img alt='Your profile pic.' src=" {{ current_user.profile_pic }} " height="32" />
+          </div>
+          <ul class="dropdown-menu mydrop fadeIn" aria-labelledby="dropdownMenu">
+            <li><a class="dropdown-item myitem" href="/account/{{ current_user.username }}">Account</a></li>
+            <li><a class="dropdown-item myitem" href="/settings">Settings</a></li>
+            <li><a class="dropdown-item myitem" href="/logout">Log Out</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </form>
+  </div>
+  <div class="card post">
+    <h4 class="card-header" style="border-bottom: black solid 1px;">
+      {% for user in users %}{% if user.sno == question.user %}<a style="text-decoration: none; color: inherit;" href="/account/{{ user.username }}">
+      <img alt="User's profile pic." src=" {{ user.profile_pic }} " height="32" /> {{ user.first_name }} {{
+      user.last_name }}</a> &bull; {{ question.subject }} &bull;
+      {% set qtime = time|int-question.time|int %}
+      {% if qtime < 60 %} {{ qtime|int }} Seconds {% elif qtime < 3600 %} {{ (qtime/60)|int }} Minutes {% elif qtime <
+        86400 %} {{ (qtime/3600)|int }} Hours {% elif qtime < 2628288 %} {{ (qtime/86400)|int }} Days {% elif qtime <
+        31536000 %} {{ (qtime/2628288)|int }} Months {% else %} {{ (qtime/31536000)|int }} Years {% endif %} Ago {%
+        endif %}{% endfor %} </h4>
+        <div class="card-body">
+          <h3 class="card-title">{% for line in question.post.splitlines() %}{{ line }}<br>{% endfor %}</h3>
+          <p class="card-text"><strong> Grade: {{ question.grade }}</strong></p>
+          <form action="/answer/{{ sno }}" method="POST">
+            <div class="form-group">
+              <label for="answer" style="font-size: 20px;"><strong>Enter your answer here:
+                </strong></label><br>
+              <textarea class="form-control" id="answer" name="answer" rows="5"
+                style="resize: vertical; font-size: 23px;" required></textarea>
+            </div><br>
+            <button type="submit" class="btn btn-success">Submit</button>
+          </form>
+        </div>
+  </div><br>
+  <h2 class="card-title" style="margin-left: 3%;"><strong>Answers: </strong></h2>
+  {% for answer in answers|reverse %}
+  <div class="card answer">
+    <h4 class="card-header">
+      {% for user in users %}{% if user.sno == answer.user %}<a style="text-decoration: none; color: inherit;" href="/account/{{ user.username }}">
+      <img alt="User's profile pic." src=" {{ user.profile_pic }} " height="32" /> {{ user.first_name
+      }} {{
+      user.last_name }}</a> &bull;
+      {% set qtime = time|int-answer.time|int %}
+      {% if qtime < 60 %} {{ qtime|int }} Seconds {% elif qtime < 3600 %} {{ (qtime/60)|int }} Minutes {% elif qtime <
+        86400 %} {{ (qtime/3600)|int }} Hours {% elif qtime < 2628288 %} {{ (qtime/86400)|int }} Days {% elif qtime <
+        31536000 %} {{ (qtime/2628288)|int }} Months {% else %} {{ (qtime/31536000)|int }} Years {% endif %} Ago {%
+        endif %}{% endfor %} </h4>
+        <div class="card-body">
+          <h4 class="card-title">{% for line in answer.answer.splitlines() %}{{ line }}<br>{%
+            endfor %}</h4>
+        </div>
+  </div>
+  {% endfor %}
+  {% endblock %}

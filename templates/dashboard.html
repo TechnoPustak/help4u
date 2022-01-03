@@ -1,6 +1,5 @@
 {% extends "layout2.html" %}
 {% block body %}
-
 .dbox {
 display: none;
 position: fixed;
@@ -16,7 +15,8 @@ background-color: rgba(0, 0, 0, 0.4);
 
 .dbox-content {
 height: 80%;
-background-color: #0bcdf3;
+background-color: #5de6de;
+background-image: linear-gradient(315deg, #5de6de 0%, #b58ecc 74%);
 border-radius: 15px;
 overflow: auto;
 margin: auto;
@@ -141,9 +141,9 @@ box-shadow: 2px 2px 3px rgb(0, 0, 0);
             <img alt='Your profile pic.' src=" {{ current_user.profile_pic }} " height="32" />
           </div>
           <ul class="dropdown-menu mydrop fadeIn" aria-labelledby="dropdownMenu">
-            <li><a class="dropdown-item myitem" href="#">Account</a></li>
-            <li><a class="dropdown-item myitem" href="#">Content</a></li>
-            <li><a class="dropdown-item myitem" href="#">Log Out</a></li>
+            <li><a class="dropdown-item myitem" href="/account/{{ current_user.username }}">Account</a></li>
+            <li><a class="dropdown-item myitem" href="/settings">Settings</a></li>
+            <li><a class="dropdown-item myitem" href="/logout">Log Out</a></li>
           </ul>
         </div>
 
@@ -153,9 +153,10 @@ box-shadow: 2px 2px 3px rgb(0, 0, 0);
   {% for question in questions|reverse %}
   <div class="card post">
     <h4 class="card-header">
-      {% for user in users %}{% if user.username == question.username %}
-      <img alt="User's profile pic." src=" {{ user.profile_pic }} " height="32" /> {{ user.first_name }} {{
-      user.last_name }} &bull; {{ question.subject }} &bull;
+      {% for user in users %}{% if user.sno == question.user %}<a style="text-decoration: none; color: inherit;"
+        href="/account/{{ user.username }}">
+        <img alt="User's profile pic." src=" {{ user.profile_pic }} " height="32" /> {{ user.first_name }} {{
+        user.last_name }}</a> &bull; {{ question.subject }} &bull;
       {% set qtime = time|int-question.time|int %}
       {% if qtime < 60 %} {{ qtime|int }} Seconds {% elif qtime < 3600 %} {{ (qtime/60)|int }} Minutes {% elif qtime <
         86400 %} {{ (qtime/3600)|int }} Hours {% elif qtime < 2628288 %} {{ (qtime/86400)|int }} Days {% elif qtime <

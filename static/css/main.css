@@ -361,7 +361,7 @@ input {
 
 .input--style-4 {
   line-height: 50px;
-  background: #fafafa;
+  background: #dfd4df;
   -webkit-box-shadow: inset 0px 1px 3px 0px rgba(0, 0, 0, 0.08);
   -moz-box-shadow: inset 0px 1px 3px 0px rgba(0, 0, 0, 0.08);
   box-shadow: inset 0px 1px 3px 0px rgba(0, 0, 0, 0.08);
@@ -504,6 +504,20 @@ input {
   cursor: pointer;
 }
 
+.mytext{
+  width: 100%;
+  border: none;
+  background: #dfd4df;
+  -webkit-box-shadow: inset 0px 1px 3px 0px rgba(0, 0, 0, 0.08);
+  -moz-box-shadow: inset 0px 1px 3px 0px rgba(0, 0, 0, 0.08);
+  box-shadow: inset 0px 1px 3px 0px rgba(0, 0, 0, 0.08);
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  padding: 20px 20px;
+  font-size: 16px;
+  color: #666;
+}
 /* ==========================================================================
    #SELECT2
    ========================================================================== */
@@ -642,3 +656,19 @@ input {
 }
 .alert{position:relative;padding:1rem 1rem;margin-bottom:1rem;border:1px solid transparent;border-radius:.25rem}
 .alert-danger{color:#842029;background-color:#f8d7da;border-color:#f5c2c7}
+
+input[type="file"] {
+  display: none;
+}
+.custom-file-upload {
+  display: inline-block;
+  margin: auto;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+.myoverlay{
+  width:50px; position: absolute; top: 25px; left: 25px; display: none; z-index: 1;
+}
+.custom-file-upload:hover .myoverlay{
+  display: block;
+}
