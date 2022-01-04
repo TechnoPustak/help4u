@@ -65,6 +65,9 @@ border-radius: 20px;
 text-align: center;
 box-shadow: 2px 2px 3px rgb(0, 0, 0);
 }
+.plink{
+
+}
 </style>
 </head>
 
@@ -72,7 +75,7 @@ box-shadow: 2px 2px 3px rgb(0, 0, 0);
   <div id="mydbox" class="dbox">
     <div class="dbox-content">
       <span class="quit">&times;</span><br>
-      <form action="/dashboard" method="POST">
+      <form action="/home" method="POST">
         <div class="form-group">
           <label for="subject">Select Subject:</label>
           <select class="form-select" id="subject" name="subject" required>
@@ -123,7 +126,7 @@ box-shadow: 2px 2px 3px rgb(0, 0, 0);
   </div>
   <div class="container-fluid navlol">
     <div class="navbar-header mynav">
-      <a class='tlink' href="/dashboard"><img src="{{ url_for('static', filename='logo.png') }}"
+      <a class='tlink' href="/home"><img src="{{ url_for('static', filename='logo.png') }}"
           style="width: auto; height: 40px;" alt="Logo" /><strong> Help4You</strong></a>
     </div>
     <form class="navbar-form navbar-right noborder">
@@ -138,7 +141,8 @@ box-shadow: 2px 2px 3px rgb(0, 0, 0);
         </div>
         <div class="dropdown" style="cursor: pointer;">
           <div style="display: inline-block; margin-left: 20px;" class="dropdown-toggle" data-bs-toggle="dropdown">
-            <img alt='Your profile pic.' src=" {{ current_user.profile_pic }} " height="32" />
+            <img alt='Your profile pic.' src=" {{ current_user.profile_pic }} " style="border-radius: 50%;" height="32"
+              width="32" />
           </div>
           <ul class="dropdown-menu mydrop fadeIn" aria-labelledby="dropdownMenu">
             <li><a class="dropdown-item myitem" href="/account/{{ current_user.username }}">Account</a></li>
@@ -150,12 +154,13 @@ box-shadow: 2px 2px 3px rgb(0, 0, 0);
       </div>
     </form>
   </div>
-  {% for question in questions|reverse %}
+  {% for question in questions.items %}
   <div class="card post">
     <h4 class="card-header">
       {% for user in users %}{% if user.sno == question.user %}<a style="text-decoration: none; color: inherit;"
         href="/account/{{ user.username }}">
-        <img alt="User's profile pic." src=" {{ user.profile_pic }} " height="32" /> {{ user.first_name }} {{
+        <img alt="User's profile pic." src=" {{ user.profile_pic }} " style="border-radius: 50%;" height="50"
+          width="50" /> {{ user.first_name }} {{
         user.last_name }}</a> &bull; {{ question.subject }} &bull;
       {% set qtime = time|int-question.time|int %}
       {% if qtime < 60 %} {{ qtime|int }} Seconds {% elif qtime < 3600 %} {{ (qtime/60)|int }} Minutes {% elif qtime <
@@ -163,12 +168,26 @@ box-shadow: 2px 2px 3px rgb(0, 0, 0);
         31536000 %} {{ (qtime/2628288)|int }} Months {% else %} {{ (qtime/31536000)|int }} Years {% endif %} Ago {%
         endif %}{% endfor %} </h4>
         <div class="card-body">
-          <h3 class="card-title">{% for line in question.post.splitlines() %}{{ line }}<br>{% endfor %}</h3>
+          <h3 class="card-title">{% for line in question.post[:150].splitlines() %}{{ line }}<br>{% endfor %}{% if
+            question.post|length>150 %}.....{% endif %}</h3>
           <p class="card-text"><strong> Grade: {{ question.grade }}</strong></p>
           <a href="/answer/{{ question.sno }}" class="btn btn-primary">Answer this question</a>
         </div>
   </div>
-  {% endfor %}
+  {% endfor %}<br>
+  <div style="text-align: center;">
+    {% for page_num in questions.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+    {% if page_num %}
+    {% if page_num == questions.page %}
+    <a class="btn btn-primary" href="#">{{ page_num }}</a>
+    {% else %}
+    <a class="btn btn-outline-primary" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+    {% endif %}
+    {% else %}
+    ...
+    {% endif %}
+    {% endfor %}
+  </div>
   <div class='question'>Ask your question</div>
   <button id='myBtn' class="float">
     <svg xmlns="http://www.w3.org/2000/svg" width="50%" height="auto" fill="currentColor" class="bi bi-plus"

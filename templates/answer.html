@@ -14,7 +14,7 @@
 <body>
   <div class="container-fluid navlol">
     <div class="navbar-header mynav">
-      <a class='tlink' href="/dashboard"><img src="{{ url_for('static', filename='logo.png') }}"
+      <a class='tlink' href="/home"><img src="{{ url_for('static', filename='logo.png') }}"
           style="width: auto; height: 40px;" alt="Logo" /><strong> Help4You</strong></a>
     </div>
     <form class="navbar-form navbar-right noborder">
@@ -29,7 +29,7 @@
         </div>
         <div class="dropdown" style="cursor: pointer;">
           <div style="display: inline-block; margin-left: 20px;" class="dropdown-toggle" data-bs-toggle="dropdown">
-            <img alt='Your profile pic.' src=" {{ current_user.profile_pic }} " height="32" />
+            <img alt='Your profile pic.' src=" {{ current_user.profile_pic }} " style="border-radius: 50%;" height="32" width="32" />
           </div>
           <ul class="dropdown-menu mydrop fadeIn" aria-labelledby="dropdownMenu">
             <li><a class="dropdown-item myitem" href="/account/{{ current_user.username }}">Account</a></li>
@@ -44,7 +44,7 @@
   <div class="card post">
     <h4 class="card-header" style="border-bottom: black solid 1px;">
       {% for user in users %}{% if user.sno == question.user %}<a style="text-decoration: none; color: inherit;" href="/account/{{ user.username }}">
-      <img alt="User's profile pic." src=" {{ user.profile_pic }} " height="32" /> {{ user.first_name }} {{
+      <img alt="User's profile pic." src=" {{ user.profile_pic }} " style="border-radius: 50%;" height="50" width="50" /> {{ user.first_name }} {{
       user.last_name }}</a> &bull; {{ question.subject }} &bull;
       {% set qtime = time|int-question.time|int %}
       {% if qtime < 60 %} {{ qtime|int }} Seconds {% elif qtime < 3600 %} {{ (qtime/60)|int }} Minutes {% elif qtime <
@@ -66,11 +66,11 @@
         </div>
   </div><br>
   <h2 class="card-title" style="margin-left: 3%;"><strong>Answers: </strong></h2>
-  {% for answer in answers|reverse %}
-  <div class="card answer">
+  {% for answer in answers.items %}
+  <div class="card answer" id="{{ answer.sno }}">
     <h4 class="card-header">
       {% for user in users %}{% if user.sno == answer.user %}<a style="text-decoration: none; color: inherit;" href="/account/{{ user.username }}">
-      <img alt="User's profile pic." src=" {{ user.profile_pic }} " height="32" /> {{ user.first_name
+      <img alt="User's profile pic." src=" {{ user.profile_pic }} " style="border-radius: 50%;" height="50" width="50" /> {{ user.first_name
       }} {{
       user.last_name }}</a> &bull;
       {% set qtime = time|int-answer.time|int %}
@@ -84,4 +84,17 @@
         </div>
   </div>
   {% endfor %}
+  <div style="text-align: center;">
+    {% for page_num in answers.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+    {% if page_num %}
+    {% if page_num == answers.page %}
+    <a class="btn btn-primary" href="#">{{ page_num }}</a>
+    {% else %}
+    <a class="btn btn-outline-primary" href="{{ url_for('answer', sno=question.sno, page=page_num) }}">{{ page_num }}</a>
+    {% endif %}
+    {% else %}
+    ...
+    {% endif %}
+    {% endfor %}
+  </div>
   {% endblock %}

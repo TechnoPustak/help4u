@@ -672,3 +672,23 @@ input[type="file"] {
 .custom-file-upload:hover .myoverlay{
   display: block;
 }
+.alert-success{color:#0f5132;background-color:#d1e7dd;border-color:#badbcc}.alert-success .alert-link{color:#0c4128}.alert-info{color:#055160;background-color:#cff4fc;border-color:#b6effb}
+.mynav{
+  text-align: center;
+  height: 50px;
+  background-color: #f9c5d1;
+background-image: linear-gradient(315deg, #f9c5d1 0%, #9795ef 74%);
+  border-bottom: 2px solid black;
+}
+.tlink{
+  position: relative;
+  font-size: 21px;
+  text-decoration: none;
+  color: #0066ff;
+  top: 5px;
+}
+.navimg{
+  width: auto;
+  height: 40px;
+  vertical-align: middle;
+}

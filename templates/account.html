@@ -19,6 +19,20 @@
         crossorigin="anonymous"></script>
 
     <style>
+        .pdiv {
+            background-color: #20bf55;
+            background-image: linear-gradient(315deg, #20bf55 0%, #01baef 74%);
+            border-radius: .25rem;
+            margin: auto;
+            padding-top: 6px;
+            width: 98%;
+        }
+
+        hr {
+            height: 10px;
+            background-color: black;
+        }
+
         .mynav {
             text-align: center;
             height: 50px;
@@ -63,7 +77,7 @@
             transform: scale(1.5)
         }
 
-        .btn {
+        .picbtn {
             height: 140px;
             width: 140px;
             border-radius: 50%
@@ -114,7 +128,7 @@
         }
 
         hr .new1 {
-            border: 1px solid
+            border: 1px solid black
         }
 
         .join {
@@ -126,32 +140,118 @@
         .date {
             background-color: #ccc
         }
+
+        .mylink {
+            text-decoration: none;
+            color: inherit;
+        }
     </style>
 </head>
 
 <body>
     <div class="container-fluid navlol">
         <div class="navbar-header mynav">
-            <a class='tlink' href="/dashboard"><img src="{{ url_for('static', filename='logo.png') }}"
+            <a class='tlink' href="/home"><img src="{{ url_for('static', filename='logo.png') }}"
                     style="width: auto; height: 40px;" alt="Logo" /><strong> Help4You</strong></a>
         </div>
     </div>
     <div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
         <div class="card p-4">
             <div class=" image d-flex flex-column justify-content-center align-items-center"> <button
-                    class="btn btn-secondary"> <img src="{{ user.profile_pic }}" height="100" width="100" /></button>
+                    class="picbtn btn btn-secondary"> <img src="{{ user.profile_pic }}" style="border-radius: 50%;"
+                        height="100" width="100" /></button>
                 <span class="name mt-3">{{ user.first_name }} {{ user.last_name }}</span> <span class="idd">@{{
                     user.username }}</span>
                 <!-- <div class="d-flex flex-row justify-content-center align-items-center mt-3"> <span class="number">1069
                         <span class="follow">Followers</span></span> </div> -->
                 {% if current_user.username == user.username %}
-                <div class=" d-flex mt-2"> <a href="/settings"><button class="btn1 btn-dark">Edit Profile</button></a> </div>{% endif %}
-                <div class="text mt-3" > <span>Gender: {{ user.gender }} <br>
-                        Birthday: {{ birthday }}<br>Email: {{ user.email }}</span> </div>
+                <div class=" d-flex mt-2"> <a href="/settings"><button class="btn1 btn-dark">Edit Profile</button></a>
+                </div>{% endif %}
+                <div class="text mt-3"> <span>Gender: {{ user.gender }} <br>
+                        Birthday: {{ birthday }}<br>Email: {{ user.email }}<br>
+                        About: {{ user.about }}</span> </div>
                 <span>
                     <div class=" px-2 rounded mt-4 date "> <span class="join">Joined {{ joined }}</span> </div>
             </div>
         </div>
+    </div>
+    <div class="pdiv">
+        <h3 class="name mt-3" style="text-align: center;">Questions Asked : {{ tques }}</h3>
+        <hr>
+        <table class="table table-borderless table-hover" style="width: 99%; margin: auto;">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Post</th>
+                    {% if user==current_user %}<th scope="col">Delete</th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for question in questions.items %}
+                <tr>
+                    <th scope="row">{{ loop.index + (per_page*(questions.page-1)) }}</th>
+                    <td><a class="mylink" href="/answer/{{ question.sno }}">{{ question.post[:150] }}{% if
+                            question.post|length>150 %}.....{% endif %}</a></td>
+                    {% if user==current_user %}<td><a class="mylink" href="/delete/question/{{ question.sno }}"><button
+                                type="button" class="btn btn-danger">Delete</button></a></td>{% endif %}
+                </tr>
+                {% endfor %}
+                <div style="text-align: center;">
+                    {% for page_num in questions.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                    {% if page_num %}
+                    {% if page_num == questions.page %}
+                    <a class="btn btn-primary" href="#">{{ page_num }}</a>
+                    {% else %}
+                    <a class="btn btn-outline-primary" href="{{ url_for('account', username=user.username, page=page_num, apage=answers.page) }}">{{
+                        page_num }}</a>
+                    {% endif %}
+                    {% else %}
+                    ...
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </tbody>
+        </table>
+    </div><br>
+    <br>
+    <div class="pdiv">
+        <h3 class="name mt-3" style="text-align: center;">Answers Given : {{ tans }}</h3>
+        <hr>
+        <table class="table table-borderless table-hover" style="width: 99%; margin: auto;">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Post</th>
+                    {% if user==current_user %}<th scope="col">Delete</th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for answer in answers.items %}
+                <tr>
+                    <th scope="row">{{ loop.index + (per_page*(answers.page-1)) }}</th>
+                    <td><a class="mylink" href="/answer/{{ answer.question_id }}">{{
+                            answer.answer[:150] }}{% if
+                            answer.answer|length>150 %}.....{% endif %}</a></td>
+                    {% if user==current_user %}<td><a class="mylink" href="/delete/answer/{{ answer.sno }}"><button
+                                type="button" class="btn btn-danger">Delete</button></a></td>{% endif %}
+                </tr>
+                {% endfor %}
+                <div style="text-align: center;">
+                    {% for page_num in answers.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                    {% if page_num %}
+                    {% if page_num == answers.page %}
+                    <a class="btn btn-primary" href="#">{{ page_num }}</a>
+                    {% else %}
+                    <a class="btn btn-outline-primary"
+                        href="{{ url_for('account', username=user.username, page=questions.page, apage=page_num) }}">{{ page_num }}</a>
+                    {% endif %}
+                    {% else %}
+                    ...
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </tbody>
+        </table>
     </div>
 </body>
 

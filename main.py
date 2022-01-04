@@ -1,8 +1,11 @@
 from flask_mail import Mail, Message
 import json
 import time
-from calendar import month_name
+import myfirebase
+import os
 import convertcode
+from werkzeug.utils import secure_filename
+from calendar import month_name
 from flask import Flask, render_template, request, session, url_for, flash, redirect
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
@@ -17,8 +20,10 @@ with open('config.json', 'r') as c:
     c.seek(0)
     statics = json.load(c)["statics"]
 
+per_page = params['per_page']
 app = Flask(__name__)
 
+app.config['UPLOAD_FOLDER'] = statics['upload_folder']
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = params['email']
@@ -83,6 +88,27 @@ def unauthorized(e):
     return redirect('/login')
 
 
+@app.errorhandler(404)
+def notfound(e):
+    return render_template('404.html')
+
+@app.route("/", methods=["GET", "POST"])
+def index():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+        message = request.form.get('message')
+        msg = Message("Feedback message from Help4You", sender=params['email'], recipients=["ashutoshthakur11sep@gmail.com"])
+        msg.html = f'''
+        <b>Name: </b>{name}<br>
+        <b>Email: </b>{email}<br>
+        <b>Phone: </b>{phone}<br>
+        <b>Message: </b>{message}
+        '''
+        mail.send(msg)
+    return render_template('index.html', params=params)
+
 @app.route("/login", methods=["GET", "POST"])
 def signin():
     if request.method == 'POST':
@@ -93,17 +119,17 @@ def signin():
         user1 = login.query.filter_by(email=email).first()
         if user and convertcode.decodecode(user.password) == password:
             login_user(user, remember=True)
-            return redirect('/dashboard')
+            return redirect('/home')
         elif user1 and convertcode.decodecode(user1.password) == password:
             login_user(user1, remember=True)
-            return redirect('/dashboard')
+            return redirect('/home')
         else:
             flash('Entered Credentials are wrong.', 'danger')
             return render_template('login.html', title='Login', params=params)
     return render_template('login.html', title='Login', params=params)
 
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == 'POST':
         session["username"] = request.form.get('username').lower()
@@ -113,6 +139,7 @@ def signup():
         rpassword = request.form.get('rpassword')
         session["birthday"] = request.form.get('birthday')
         session["gender"] = request.form.get('gender')
+        session['about'] = request.form.get('about')
         email = request.form.get('email')
         sign_user = login.query.filter_by(
             username=session.get('username')).first()
@@ -126,20 +153,21 @@ def signup():
         else:
             token = s.dumps(email, salt='email-confirm')
             msg = Message(
-                'Confirm Email', sender='factsworld1109@gmail.com', recipients=[email])
+                'Confirm Email ', params['email'], recipients=[email])
             link = url_for('verify', token=token, _external=True)
-            msg.body = 'Your link is {} but go on this link from the same device and browser used for registration.'.format(
+            msg.body = 'Your link is {} but go on this link(will expire in 1 hr) from the same device and browser used for registration.'.format(
                 link)
             mail.send(msg)
             return render_template('box.html', email=email)
     return render_template('signup.html', title=f"{params['title']}: Sign Up for a new account", params=params)
 
 
-@app.route('/dashboard', methods=["GET", "POST"])
+@app.route('/home', methods=["GET", "POST"])
 @login_required
-def dashboard():
-    questions = posts.query.filter_by().all()
-    users = login.query.filter_by().all()
+def home():
+    page=request.args.get('page', 1, type=int)
+    questions = posts.query.order_by(posts.sno.desc()).paginate(page=page, per_page=per_page)
+    users = login.query.all()
     if request.method == 'POST':
         username = current_user.sno
         post = request.form.get('question')
@@ -149,16 +177,17 @@ def dashboard():
                      subject=subject, time=time.time(), grade=grade)
         db.session.add(info)
         db.session.commit()
-        return redirect('/dashboard')
-    return render_template("dashboard.html", title=f"{params['title']}: Ask and Answer Questions", questions=questions, users=users, time=time.time())
+        return redirect('/home')
+    return render_template("home.html", title=f"{params['title']}: Ask and Answer Questions", questions=questions, users=users, time=time.time())
 
 
 @app.route('/answer/<int:sno>', methods=["GET", "POST"])
 @login_required
 def answer(sno):
-    users = login.query.filter_by().all()
+    page=request.args.get('page', 1, type=int)
+    users = login.query.all()
     question = posts.query.filter_by(sno=sno).first()
-    myanswers = answers.query.filter_by(question_id=str(sno)).all()
+    myanswers = answers.query.filter_by(question_id=sno).order_by(answers.sno.desc()).paginate(page=page, per_page=per_page)
     if request.method == 'POST':
         myanswer = request.form.get('answer')
         answer_info = answers(
@@ -169,46 +198,96 @@ def answer(sno):
     if question:
         return render_template('answer.html', title=f"{params['title']}: Give Answers", question=question, time=time.time(), users=users, sno=sno, answers=myanswers)
     else:
-        return redirect('/dashboard')
+        return redirect('/home')
 
 
 @app.route('/account/<string:username>')
 def account(username):
+    page=request.args.get('page', 1, type=int)
+    apage=request.args.get('apage', 1, type=int)
     user = login.query.filter_by(username=username).first()
+    queastions = posts.query.filter_by(user=user.sno).order_by(posts.sno.desc()).paginate(page=page, per_page=per_page)
+    tques = len(posts.query.all())
+    tans = len(answers.query.all())
+    myanswers = answers.query.filter_by(user=user.sno).order_by(answers.sno.desc()).paginate(page=apage, per_page=per_page)
     timep = time.localtime(int(float(user.time)))
     joined = f'{timep.tm_mday} {month_name[timep.tm_mon]}, {timep.tm_year}'
     bday = user.birthday.split('/')
     birthday = f'{bday[0]} {month_name[int(bday[1])]}, {bday[-1]}'
     if user:
-        return render_template('account.html', title=f'Account: {user.username}', user=user, joined=joined, birthday=birthday)
+        return render_template('account.html', tques=tques, tans=tans, title=f'Account @ {user.username}', user=user, joined=joined, birthday=birthday, questions=queastions, answers=myanswers, per_page=per_page)
     else:
-        return 'Not Available.'
+        return render_template('404.html')
 
 
 @app.route('/settings', methods=["GET", "POST"])
 @login_required
 def settings():
-    if request.method=='POST':
-        username = request.form.get('username')
+    if request.method == 'POST':
         email = request.form.get('email')
-        user1 = login.query.filter_by(username=username).first()
-        user2 = login.query.filter_by(email=email).first()
-        if username != current_user.username and user1!=None:
-            flash('Username Used.')
-        elif email != current_user.email and user2!=None:
-            flash('Already an account with this email.')
+        currentp = request.form.get('currentp')
+        if email:
+            user1 = login.query.filter_by(email=email).first()
+            if user1 != None:
+                flash('Already an account with this email.', 'danger')
+                return redirect('/settings')
+            else:
+                token = s.dumps(email, salt='email-confirm')
+                msg = Message(
+                    'Confirm Email ', sender=params['email'], recipients=[email])
+                link = url_for('verify2', token=token, _external=True)
+                msg.body = 'Your link is {} but go on this linklink(will expire in 1 hr) from the same device and browser used for registration.'.format(
+                    link)
+                mail.send(msg)
+                flash(
+                    'A confirmation link has been sent on the email address - '+email, 'success')
+                return redirect('/settings')
+        elif currentp:
+            encpass = convertcode.convertcode(currentp)
+            if encpass != current_user.password:
+                flash('Current Password is wrong.', 'danger')
+                return redirect('/settings')
+            else:
+                newp = request.form.get('newp')
+                rp = request.form.get('rp')
+                if newp != rp:
+                    flash('New Password and Repeat Password is different.', 'danger')
+                    return redirect('/settings')
+                else:
+                    encpass = convertcode.convertcode(newp)
+                    current_user.password = encpass
+                    db.session.commit()
+                    flash('Password has been changed.', 'success')
+                    return redirect('/settings')
         else:
-            user = login.query.filter_by(sno=current_user.sno).first()
-            user.username = username
-            user.email = email
-            user.first_name = request.form.get('first_name')
-            user.last_name = request.form.get('last_name')
-            user.gender = request.form.get('gender')
-            user.birthday = request.form.get('birthday')
-            user.about = request.form.get('about')
-            db.session.commit()
-        return redirect('/settings')
-    return render_template('settings.html', params=params, title=f'{params["title"]} : Settings')
+            file = request.files['file']
+            if file:
+                if file.filename != '':
+                    filename = secure_filename(file.filename)
+                    file.save(os.path.join(
+                        app.config['UPLOAD_FOLDER'], filename))
+                    myfirebase.upload(
+                        app.config['UPLOAD_FOLDER']+'/'+filename, str(current_user.sno)+'/profile_pic.png')
+                    piclink = myfirebase.getfileurl(
+                        str(current_user.sno)+'/profile_pic.png')
+                    current_user.profile_pic = piclink
+                    db.session.commit()
+                    return redirect('/settings')
+            username = request.form.get('username')
+            user1 = login.query.filter_by(username=username).first()
+            if username != current_user.username and user1 != None:
+                flash('Username Used.', 'danger')
+            else:
+                current_user.username = username
+                current_user.first_name = request.form.get('first_name')
+                current_user.last_name = request.form.get('last_name')
+                current_user.gender = request.form.get('gender')
+                current_user.birthday = request.form.get('birthday')
+                current_user.about = request.form.get('about')
+                db.session.commit()
+            return redirect('/settings')
+    return render_template('settings.html', title=f'{params["title"]} : Settings')
+
 
 @app.route("/verify/<token>")
 def verify(token):
@@ -220,42 +299,56 @@ def verify(token):
         password = session.get('password')
         birthday = session.get('birthday')
         gender = session.get('gender')
+        about = session.get('about')
         encpass = convertcode.convertcode(password)
         profile_pic = statics['profile_pic']
         info = login(username=username, first_name=first_name, last_name=last_name, password=encpass,
-                     birthday=birthday, gender=gender, email=email, profile_pic=profile_pic, time=time.time())
+                     birthday=birthday, gender=gender, email=email, profile_pic=profile_pic, time=time.time(), about=about)
         db.session.add(info)
         db.session.commit()
         flash('Your account has been created successfully.', 'success')
         return redirect('/login')
     except SignatureExpired:
-        return 'Your link has been expired.'
+        return render_template('404.html')
     except BadSignature:
-        return 'No such link.'
+        return render_template('404.html')
 
 
-@app.route("/forgot-password", methods=["GET", "POST"])
-def passwordemail():
-    if request.method == 'POST':
-        email = request.form.get('code')
-        token = s.dumps(email, salt='change-pass')
-        msg = Message('Password Change',
-                      sender='factsworld1109@gmail.com', recipients=[email])
-        link = url_for('changepass', token=token, _external=True)
-        msg.body = 'Your link is {}'.format(link)
-        mail.send(msg)
-        return render_template('box.html', email=email)
-    return render_template('password.html', title='Password Recovery')
-
-
-@app.route('/change-password/<token>')
-def changepass(token):
+@app.route("/verify2/<token>")
+@login_required
+def verify2(token):
     try:
-        email = s.loads(token, salt='change-pass', max_age=3600)
-        email_user = login.query.filter_by(email=email).first()
-        return 'True'
+        email = s.loads(token, salt='email-confirm', max_age=3600)
+        user = login.query.filter_by(username=current_user.username).first()
+        user.email = email
+        db.session.commit()
+        flash('Email address has been changed.', 'success')
+        return redirect('/settings')
     except SignatureExpired:
-        return 'False'
+        return render_template('404.html')
+    except BadSignature:
+        return render_template('404.html')
+
+
+@app.route("/delete/<type>/<sno>")
+@login_required
+def delete(type, sno):
+    if type == 'question':
+        question = posts.query.filter_by(sno=sno).first()
+        if question and question.user == current_user.sno:
+            answer = answers.query.filter_by(question_id=question.sno).all()
+            db.session.delete(question)
+            for i in answer:
+                db.session.delete(i)
+            db.session.commit()
+            return redirect('/account/'+current_user.username)
+    elif type == 'answer':
+        answer = answers.query.filter_by(sno=sno).first()
+        if answer and answer.user == current_user.sno:
+            db.session.delete(answer)
+            db.session.commit()
+            return redirect('/account/'+current_user.username)
+    return render_template('404.html')
 
 
 @app.route("/google4a74fd24a326259f.html")
