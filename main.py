@@ -266,8 +266,7 @@ def settings():
                     filename = secure_filename(file.filename)
                     file.save(os.path.join(
                         app.config['UPLOAD_FOLDER'], filename))
-                    myfirebase.upload(
-                        app.config['UPLOAD_FOLDER']+'/'+filename, str(current_user.sno)+'/profile_pic.png')
+                    myfirebase.upload(filename, str(current_user.sno)+'/profile_pic.png')
                     piclink = myfirebase.getfileurl(
                         str(current_user.sno)+'/profile_pic.png')
                     current_user.profile_pic = piclink
