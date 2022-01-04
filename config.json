@@ -17,6 +17,6 @@
     },
     "statics": {
         "profile_pic": "https://help4you.herokuapp.com/static/profile.png",
-        "upload_folder":"mystatic"
+        "upload_folder":""
     }
 }
