@@ -206,15 +206,15 @@ def account(username):
     page=request.args.get('page', 1, type=int)
     apage=request.args.get('apage', 1, type=int)
     user = login.query.filter_by(username=username).first()
-    queastions = posts.query.filter_by(user=user.sno).order_by(posts.sno.desc()).paginate(page=page, per_page=per_page)
-    tques = len(posts.query.all())
-    tans = len(answers.query.all())
-    myanswers = answers.query.filter_by(user=user.sno).order_by(answers.sno.desc()).paginate(page=apage, per_page=per_page)
-    timep = time.localtime(int(float(user.time)))
-    joined = f'{timep.tm_mday} {month_name[timep.tm_mon]}, {timep.tm_year}'
-    bday = user.birthday.split('/')
-    birthday = f'{bday[0]} {month_name[int(bday[1])]}, {bday[-1]}'
     if user:
+        queastions = posts.query.filter_by(user=user.sno).order_by(posts.sno.desc()).paginate(page=page, per_page=per_page)
+        tques = len(posts.query.all())
+        tans = len(answers.query.all())
+        myanswers = answers.query.filter_by(user=user.sno).order_by(answers.sno.desc()).paginate(page=apage, per_page=per_page)
+        timep = time.localtime(int(float(user.time)))
+        joined = f'{timep.tm_mday} {month_name[timep.tm_mon]}, {timep.tm_year}'
+        bday = user.birthday.split('/')
+        birthday = f'{bday[0]} {month_name[int(bday[1])]}, {bday[-1]}'
         return render_template('account.html', tques=tques, tans=tans, title=f'Account @ {user.username}', user=user, joined=joined, birthday=birthday, questions=queastions, answers=myanswers, per_page=per_page)
     else:
         return render_template('404.html')
