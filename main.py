@@ -152,8 +152,7 @@ def signup():
             flash('Password and repeat password are different.')
         else:
             token = s.dumps(email, salt='email-confirm')
-            msg = Message(
-                'Confirm Email ', params['email'], recipients=[email])
+            msg = Message('Confirm Email ', sender='factsworld1109@gmail.com', recipients=[email])
             link = url_for('verify', token=token, _external=True)
             msg.body = 'Your link is {} but go on this link(will expire in 1 hr) from the same device and browser used for registration.'.format(
                 link)
