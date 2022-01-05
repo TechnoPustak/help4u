@@ -225,6 +225,7 @@ def settings():
     if request.method == 'POST':
         email = request.form.get('email')
         currentp = request.form.get('currentp')
+        username = request.form.get('username')
         if email:
             user1 = login.query.filter_by(email=email).first()
             if user1 != None:
@@ -258,6 +259,17 @@ def settings():
                     db.session.commit()
                     flash('Password has been changed.', 'success')
                     return redirect('/settings')
+        elif username:
+            if username != current_user.username and user1 != None:
+                flash('Username Used.', 'danger')
+            else:
+                current_user.username = username
+                current_user.first_name = request.form.get('first_name')
+                current_user.last_name = request.form.get('last_name')
+                current_user.gender = request.form.get('gender')
+                current_user.birthday = request.form.get('birthday')
+                current_user.about = request.form.get('about')
+                db.session.commit()
         else:
             file = request.files['file']
             if file:
@@ -271,18 +283,8 @@ def settings():
                     current_user.profile_pic = piclink
                     db.session.commit()
                     return redirect('/settings')
-            username = request.form.get('username')
             user1 = login.query.filter_by(username=username).first()
-            if username != current_user.username and user1 != None:
-                flash('Username Used.', 'danger')
-            else:
-                current_user.username = username
-                current_user.first_name = request.form.get('first_name')
-                current_user.last_name = request.form.get('last_name')
-                current_user.gender = request.form.get('gender')
-                current_user.birthday = request.form.get('birthday')
-                current_user.about = request.form.get('about')
-                db.session.commit()
+            
             return redirect('/settings')
     return render_template('settings.html', title=f'{params["title"]} : Settings')
 
