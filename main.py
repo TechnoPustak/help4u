@@ -260,6 +260,7 @@ def settings():
                     flash('Password has been changed.', 'success')
                     return redirect('/settings')
         elif username:
+            user1 = login.query.filter_by(username=username).first()
             if username != current_user.username and user1 != None:
                 flash('Username Used.', 'danger')
             else:
@@ -283,8 +284,6 @@ def settings():
                     current_user.profile_pic = piclink
                     db.session.commit()
                     return redirect('/settings')
-            user1 = login.query.filter_by(username=username).first()
-            
             return redirect('/settings')
     return render_template('settings.html', title=f'{params["title"]} : Settings')
 
