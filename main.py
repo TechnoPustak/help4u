@@ -1,9 +1,5 @@
 from flask_mail import Mail, Message
-import json
-import time
-import myfirebase
-import os
-import convertcode
+import json, time, myfirebase, os, convertcode
 from werkzeug.utils import secure_filename
 from calendar import month_name
 from flask import Flask, render_template, request, session, url_for, flash, redirect
@@ -35,7 +31,6 @@ mail = Mail(app)
 s = URLSafeTimedSerializer('my-secret')
 sslify = SSLify(app)
 
-# heroku pg:psql postgresql-spherical-80201 --app help4you
 app.config['SQLALCHEMY_DATABASE_URI'] = f"{database['app']}://{database['user']}:{database['password']}@{database['host']}/{database['database']}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "super-secret-key"
@@ -44,11 +39,9 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-
 @login_manager.user_loader
 def load_user(sno):
     return login.query.get(sno)
-
 
 class login(UserMixin, db.Model):
     def get_id(self):
@@ -65,7 +58,6 @@ class login(UserMixin, db.Model):
     time = db.Column(db.String(100), nullable=False)
     about = db.Column(db.String(), nullable=True)
 
-
 class posts(db.Model):
     sno = db.Column(db.Integer, primary_key=True)
     post = db.Column(db.String(50000), nullable=False)
@@ -74,7 +66,6 @@ class posts(db.Model):
     time = db.Column(db.String(100), nullable=False)
     grade = db.Column(db.String(100), nullable=False)
 
-
 class answers(db.Model):
     sno = db.Column(db.Integer, primary_key=True)
     answer = db.Column(db.String(50000), nullable=False)
@@ -82,11 +73,9 @@ class answers(db.Model):
     question_id = db.Column(db.String(100), nullable=False)
     time = db.Column(db.String(100), nullable=False)
 
-
 @app.errorhandler(401)
 def unauthorized(e):
     return redirect('/login')
-
 
 @app.errorhandler(404)
 def notfound(e):
@@ -128,7 +117,6 @@ def signin():
             return render_template('login.html', title='Login', params=params)
     return render_template('login.html', title='Login', params=params)
 
-
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == 'POST':
@@ -160,7 +148,6 @@ def signup():
             return render_template('box.html', email=email)
     return render_template('signup.html', title=f"{params['title']}: Sign Up for a new account", params=params)
 
-
 @app.route('/home', methods=["GET", "POST"])
 @login_required
 def home():
@@ -178,7 +165,6 @@ def home():
         db.session.commit()
         return redirect('/home')
     return render_template("home.html", title=f"{params['title']}: Ask and Answer Questions", questions=questions, users=users, time=time.time())
-
 
 @app.route('/answer/<int:sno>', methods=["GET", "POST"])
 @login_required
@@ -199,7 +185,6 @@ def answer(sno):
     else:
         return redirect('/home')
 
-
 @app.route('/account/<string:username>')
 def account(username):
     page=request.args.get('page', 1, type=int)
@@ -217,7 +202,6 @@ def account(username):
         return render_template('account.html', tques=tques, tans=tans, title=f'Account @ {user.username}', user=user, joined=joined, birthday=birthday, questions=queastions, answers=myanswers, per_page=per_page)
     else:
         return render_template('404.html')
-
 
 @app.route('/settings', methods=["GET", "POST"])
 @login_required
@@ -287,7 +271,6 @@ def settings():
             return redirect('/settings')
     return render_template('settings.html', title=f'{params["title"]} : Settings')
 
-
 @app.route("/verify/<token>")
 def verify(token):
     try:
@@ -312,7 +295,6 @@ def verify(token):
     except BadSignature:
         return render_template('404.html')
 
-
 @app.route("/verify2/<token>")
 @login_required
 def verify2(token):
@@ -327,7 +309,6 @@ def verify2(token):
         return render_template('404.html')
     except BadSignature:
         return render_template('404.html')
-
 
 @app.route("/delete/<type>/<sno>")
 @login_required
@@ -349,11 +330,9 @@ def delete(type, sno):
             return redirect('/account/'+current_user.username)
     return render_template('404.html')
 
-
 @app.route("/google4a74fd24a326259f.html")
 def googlesearchverify():
     return render_template('google4a74fd24a326259f.html')
-
 
 @app.route('/logout')
 @login_required
@@ -361,7 +340,6 @@ def logout():
     logout_user()
     flash('You has been logged out successfully. ', 'success')
     return redirect('/login')
-
 
 if __name__ == '__main__':
     app.run(debug=True)
