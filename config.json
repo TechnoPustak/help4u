@@ -8,13 +8,6 @@
         "email-password": "pnhnywcnwixzhhie",
         "per_page":5
     },
-    "database": {
-        "app": "postgresql",
-        "user": "yevlknkjbmypjt",
-        "host": "ec2-63-32-7-190.eu-west-1.compute.amazonaws.com",
-        "database": "d8jh8v31krp5gl",
-        "password": "6d71ad7dfdd99239e0c95209d303a833f5b6a98c145460550b785bd7c9cdea21"
-    },
     "statics": {
         "profile_pic": "https://help4you.herokuapp.com/static/profile.png",
         "upload_folder":""

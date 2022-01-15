@@ -1,5 +1,5 @@
 from flask_mail import Mail, Message
-import json, time, myfirebase, os, convertcode
+import json, time, os, myfirebase, convertcode
 from werkzeug.utils import secure_filename
 from calendar import month_name
 from flask import Flask, render_template, request, session, url_for, flash, redirect
@@ -11,8 +11,6 @@ from itsdangerous.exc import BadSignature, SignatureExpired
 
 with open('config.json', 'r') as c:
     params = json.load(c)["params"]
-    c.seek(0)
-    database = json.load(c)["database"]
     c.seek(0)
     statics = json.load(c)["statics"]
 
@@ -31,7 +29,7 @@ mail = Mail(app)
 s = URLSafeTimedSerializer('my-secret')
 sslify = SSLify(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f"{database['app']}://{database['user']}:{database['password']}@{database['host']}/{database['database']}"
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "super-secret-key"
 db = SQLAlchemy(app)
