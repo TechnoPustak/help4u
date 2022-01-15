@@ -30,9 +30,10 @@ s = URLSafeTimedSerializer('my-secret')
 sslify = SSLify(app)
 
 if params['host'] == 'development':
-    database = 'postgres://qnxrojcyfjfifp:5429b03e63250378f9dc6a9b3f0b732d642fc9921d3316089caed66c87961324@ec2-34-243-180-8.eu-west-1.compute.amazonaws.com:5432/d8vbf4qkk83en7'
+    database = 'postgresql://qnxrojcyfjfifp:5429b03e63250378f9dc6a9b3f0b732d642fc9921d3316089caed66c87961324@ec2-34-243-180-8.eu-west-1.compute.amazonaws.com:5432/d8vbf4qkk83en7'
 else:
     database = os.environ.get('DATABASE_URL')
+    database = database[:8] + 'ql' + database[8:]
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
