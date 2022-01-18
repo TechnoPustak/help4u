@@ -75,7 +75,21 @@ box-shadow: 2px 2px 3px rgb(0, 0, 0);
   <div id="mydbox" class="dbox">
     <div class="dbox-content">
       <span class="quit">&times;</span><br>
-      <form action="/home" method="POST">
+      <form method="POST" action="/home" enctype="multipart/form-data">
+        <div class="row row-space">
+          <label style="cursor: pointer;">
+            <input style='display:none;' type="file" accept="image/*"
+              onchange="document.getElementById('upload').src = window.URL.createObjectURL(this.files[0]);
+              document.getElementById('upload').style.width = '100%';" name="file"
+              id='file' />
+            <div style="position: relative; left: 0; top: 0;">
+              <img src="{{ url_for('static', filename='images/upload.png') }}"
+                style="width:100px; margin: 0 auto; display: block;" id="upload" alt="Logo" />
+            </div>
+          </label>
+        </div>
+        <h4 class="title" style="text-align: center; margin-bottom: 0;">Upload Question Image</h4>
+        <p style="text-align: center;">(Optional)</p><br><br>
         <div class="form-group">
           <label for="subject">Select Subject:</label>
           <select class="form-select" id="subject" name="subject" required>

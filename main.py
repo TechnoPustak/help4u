@@ -69,6 +69,7 @@ class posts(db.Model):
     subject = db.Column(db.String(100), nullable=False)
     time = db.Column(db.String(100), nullable=False)
     grade = db.Column(db.String(100), nullable=False)
+    piclink = db.Column(db.String(100000), nullable=True)
 
 class answers(db.Model):
     sno = db.Column(db.Integer, primary_key=True)
@@ -76,6 +77,7 @@ class answers(db.Model):
     user = db.Column(db.Integer, nullable=False)
     question_id = db.Column(db.String(100), nullable=False)
     time = db.Column(db.String(100), nullable=False)
+    piclink = db.Column(db.String(100000), nullable=True)
 
 @app.errorhandler(401)
 def unauthorized(e):
@@ -159,12 +161,24 @@ def home():
     questions = posts.query.order_by(posts.sno.desc()).paginate(page=page, per_page=per_page)
     users = login.query.all()
     if request.method == 'POST':
+        file = request.files['file']
+        if file:
+            if file.filename != '':
+                psno = str(len(posts.query.all()) + 1)
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(
+                    app.config['UPLOAD_FOLDER'], filename))
+                myfirebase.upload(filename, str(current_user.sno)+'/questions/'+psno+'.jpg')
+                piclink = myfirebase.getfileurl(
+                    str(current_user.sno)+'/questions/'+psno+'.jpg')
+        else:
+            piclink=None
         username = current_user.sno
         post = request.form.get('question')
         subject = request.form.get('subject')
         grade = request.form.get('grade')
         info = posts(user=username, post=post,
-                     subject=subject, time=time.time(), grade=grade)
+                     subject=subject, time=time.time(), grade=grade, piclink=piclink)
         db.session.add(info)
         db.session.commit()
         return redirect('/home')
@@ -178,9 +192,21 @@ def answer(sno):
     question = posts.query.filter_by(sno=sno).first()
     myanswers = answers.query.filter_by(question_id=sno).order_by(answers.sno.desc()).paginate(page=page, per_page=per_page)
     if request.method == 'POST':
+        file = request.files['file']
+        if file:
+            if file.filename != '':
+                psno = str(len(answers.query.all()) + 1)
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(
+                    app.config['UPLOAD_FOLDER'], filename))
+                myfirebase.upload(filename, str(current_user.sno)+'/answers/'+psno+'.jpg')
+                piclink = myfirebase.getfileurl(
+                    str(current_user.sno)+'/answers/'+psno+'.jpg')
+        else:
+            piclink = None
         myanswer = request.form.get('answer')
         answer_info = answers(
-            answer=myanswer, user=current_user.sno, question_id=sno, time=time.time())
+            answer=myanswer, user=current_user.sno, question_id=sno, time=time.time(), piclink=piclink)
         db.session.add(answer_info)
         db.session.commit()
         return redirect('/answer/'+str(sno))
@@ -321,14 +347,23 @@ def delete(type, sno):
         question = posts.query.filter_by(sno=sno).first()
         if question and question.user == current_user.sno:
             answer = answers.query.filter_by(question_id=question.sno).all()
+            if question.piclink:
+                image = myfirebase.getpath(question.piclink)
+                myfirebase.delete(image)
             db.session.delete(question)
             for i in answer:
+                if i.piclink:
+                    image = myfirebase.getpath(i.piclink)
+                    myfirebase.delete(image)
                 db.session.delete(i)
             db.session.commit()
             return redirect('/account/'+current_user.username)
     elif type == 'answer':
         answer = answers.query.filter_by(sno=sno).first()
         if answer and answer.user == current_user.sno:
+            if answer.piclink:
+                    image = myfirebase.getpath(answer.piclink)
+                    myfirebase.delete(image)
             db.session.delete(answer)
             db.session.commit()
             return redirect('/account/'+current_user.username)

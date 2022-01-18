@@ -52,9 +52,25 @@
         31536000 %} {{ (qtime/2628288)|int }} Months {% else %} {{ (qtime/31536000)|int }} Years {% endif %} Ago {%
         endif %}{% endfor %} </h4>
         <div class="card-body">
+          {% if question.piclink %}
+          <img src="{{ question.piclink }}" style="width: 100%;" alt=""><br><br>{% endif %}
           <h3 class="card-title">{% for line in question.post.splitlines() %}{{ line }}<br>{% endfor %}</h3>
           <p class="card-text"><strong> Grade: {{ question.grade }}</strong></p>
-          <form action="/answer/{{ sno }}" method="POST">
+          <form action="/answer/{{ sno }}" method="POST" enctype="multipart/form-data">
+            <div class="row row-space">
+              <label style="cursor: pointer;">
+                <input style='display:none;' type="file" accept="image/*"
+                  onchange="document.getElementById('upload').src = window.URL.createObjectURL(this.files[0]);
+                  document.getElementById('upload').style.width = '100%';" name="file"
+                  id='file' />
+                <div style="position: relative; left: 0; top: 0;">
+                  <img src="{{ url_for('static', filename='images/upload.png') }}"
+                    style="width:100px; margin: 0 auto; display: block;" id="upload" alt="Logo" />
+                </div>
+              </label>
+            </div>
+            <h4 class="title" style="text-align: center; margin-bottom: 0;">Upload Answer Image</h4>
+            <p style="text-align: center;">(Optional)</p><br>
             <div class="form-group">
               <label for="answer" style="font-size: 20px;"><strong>Enter your answer here:
                 </strong></label><br>
@@ -79,6 +95,8 @@
         31536000 %} {{ (qtime/2628288)|int }} Months {% else %} {{ (qtime/31536000)|int }} Years {% endif %} Ago {%
         endif %}{% endfor %} </h4>
         <div class="card-body">
+          {% if answer.piclink %}
+          <img src="{{ answer.piclink }}" style="width: 100%;" alt=""><br><br>{% endif %}
           <h4 class="card-title">{% for line in answer.answer.splitlines() %}{{ line }}<br>{%
             endfor %}</h4>
         </div>
