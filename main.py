@@ -185,7 +185,6 @@ def home():
     return render_template("home.html", title=f"{params['title']}: Ask and Answer Questions", questions=questions, users=users, time=time.time())
 
 @app.route('/answer/<int:sno>', methods=["GET", "POST"])
-@login_required
 def answer(sno):
     page=request.args.get('page', 1, type=int)
     users = login.query.all()
@@ -229,7 +228,7 @@ def account(username):
         joined = f'{timep.tm_mday} {month_name[timep.tm_mon]}, {timep.tm_year}'
         bday = user.birthday.split('/')
         birthday = f'{bday[0]} {month_name[int(bday[1])]}, {bday[-1]}'
-        return render_template('account.html', tques=tques, tans=tans, title=f'Account @ {user.username}', user=user, joined=joined, birthday=birthday, questions=queastions, answers=myanswers, per_page=per_page)
+        return render_template('account.html', tques=tques, tans=tans, title=f'Help4You Account @ {user.username}', user=user, joined=joined, birthday=birthday, questions=queastions, answers=myanswers, per_page=per_page)
     else:
         return render_template('404.html')
 

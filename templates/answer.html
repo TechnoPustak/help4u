@@ -27,6 +27,7 @@
                 d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
             </svg></button>
         </div>
+        {% if current_user.is_authenticated %}
         <div class="dropdown" style="cursor: pointer;">
           <div style="display: inline-block; margin-left: 20px;" class="dropdown-toggle" data-bs-toggle="dropdown">
             <img alt='Your profile pic.' src=" {{ current_user.profile_pic }} " style="border-radius: 50%;" height="32" width="32" />
@@ -36,11 +37,14 @@
             <li><a class="dropdown-item myitem" href="/settings">Settings</a></li>
             <li><a class="dropdown-item myitem" href="/logout">Log Out</a></li>
           </ul>
-        </div>
-
+        </div>{% endif %}
       </div>
     </form>
   </div>
+  {% if not current_user.is_authenticated %}
+  <div class="alert alert-info" style="width: 95%; margin:5px auto; border-radius: 20px;" role="alert">
+    Log in to give answer. <a href="/login"><button type="button" class="btn btn-success">Log In</button></a>
+  </div>{% endif %}
   <div class="card post">
     <h4 class="card-header" style="border-bottom: black solid 1px;">
       {% for user in users %}{% if user.sno == question.user %}<a style="text-decoration: none; color: inherit;" href="/account/{{ user.username }}">
@@ -56,6 +60,7 @@
           <img src="{{ question.piclink }}" style="width: 100%;" alt=""><br><br>{% endif %}
           <h3 class="card-title">{% for line in question.post.splitlines() %}{{ line }}<br>{% endfor %}</h3>
           <p class="card-text"><strong> Grade: {{ question.grade }}</strong></p>
+          {% if current_user.is_authenticated %}
           <form action="/answer/{{ sno }}" method="POST" enctype="multipart/form-data">
             <div class="row row-space">
               <label style="cursor: pointer;">
@@ -78,7 +83,7 @@
                 style="resize: vertical; font-size: 23px;" required></textarea>
             </div><br>
             <button type="submit" class="btn btn-success">Submit</button>
-          </form>
+          </form>{% endif %}
         </div>
   </div><br>
   <h2 class="card-title" style="margin-left: 3%;"><strong>Answers: </strong></h2>
