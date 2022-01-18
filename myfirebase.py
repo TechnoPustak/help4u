@@ -1,4 +1,5 @@
 import pyrebase
+from PIL import Image
 
 config = {
     "apiKey": "AIzaSyA2QGz5kPdvFmg90xhDxy2FzCf9_mKOPWE",
@@ -18,7 +19,10 @@ storage = firebase.storage()
 
 
 def upload(path_local, path_on_cloud):
-    storage.child(path_on_cloud).put(path_local)
+    im = Image.open(path_local)
+    im.thumbnail((800, 800))
+    im.save('lol.png')
+    storage.child(path_on_cloud).put("lol.png")
     return True
 
 email = "factsworld1109@gmail.com"
@@ -26,10 +30,7 @@ password = "help4youisbest"
 user = auth.sign_in_with_email_and_password(email, password)
 
 def getfileurl(path_on_cloud):
-    # url = storage.child(path_on_cloud).get_url(user['idToken'])
-    file = path_on_cloud.split('/')
-    file = "%2F".join(file)
-    url = "https://firebasestorage.googleapis.com/v0/b/freestorage-dfe15.appspot.com/o/"+file+'?alt=media'
+    url = storage.child(path_on_cloud).get_url(None)
     return url
 
 def getpath(url):
