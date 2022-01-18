@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+{% block body %}
+<style>
+    .card {
+        width: 98%;
+        max-width: 350px;
+        padding: 10px;
+        border-radius: 20px;
+        background-color: #20bf55;
+        background-image: linear-gradient(315deg, #20bf55 0%, #01baef 74%);
+        border: none;
+        position: relative
+    }
+
+    .container {
+        height: 100vh
+    }
+
+    body {
+        background-color: #f6d327;
+        background-image: linear-gradient(315deg, #f6d327 0%, #de4daa 74%);
+    }
+
+    .mobile-text {
+        color: #363434b8;
+        font-size: 15px
+    }
+
+    .form-control {
+        margin-right: 12px
+    }
+
+    .form-control:focus {
+        color: #495057;
+        background-color: #fff;
+        border-color: #ff8880;
+        outline: 0;
+        box-shadow: none
+    }
+
+    input[type=text]{
+        text-align: center;
+    }
+
+    .cursor {
+        cursor: pointer
+    }
+</style>
+</head>
+
+<body>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      {% for  message in messages %}
+      <div class="alert alert-danger" style="width: 90%; margin: auto; top: 13px;" role="alert">
+        {{ message }}
+      </div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+    <form method="POST" action="/code">
+    <div class="d-flex justify-content-center align-items-center container">
+        <div class="card py-5 px-3">
+            <h5 class="m-0">Mobile phone verification</h5><span class="mobile-text">Enter the code we just send on your
+                email address <b class="text-danger">{{ email }}</b></span>
+
+            <div class="d-flex flex-row mt-5"><input name="code1" id="code1" type="text" class="form-control"
+                    autofocus=""><input type="text" name="code2" id="code2" class="form-control"><input name="code3"
+                    id="code3" type="text" class="form-control"><input type="text" name="code4" id="code4"
+                    class="form-control"><input name="code5" id="code5" type="text" class="form-control"></div>
+
+            <div class="text-center mt-5"><input style="margin:auto;" value="Submit" class="btn btn-success" type="submit"><span class="d-block mobile-text">Don't receive the code?</span><a
+                    href="/code"><span class="text-danger cursor"><strong>Resend</strong></span></a></div>
+        </div>
+    </div>
+    </form>
+    {% endblock %}

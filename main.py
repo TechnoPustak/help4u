@@ -1,5 +1,5 @@
 from flask_mail import Mail, Message
-import json, time, os, myfirebase, convertcode
+import json, time, os, myfirebase, convertcode, string, random
 from werkzeug.utils import secure_filename
 from calendar import month_name
 from flask import Flask, render_template, request, session, url_for, flash, redirect
@@ -87,6 +87,45 @@ def unauthorized(e):
 def notfound(e):
     return render_template('404.html')
 
+@app.route('/code', methods=["GET", "POST"])
+def code():
+    res = session.get('code')
+    if res:
+        email = session.get('email')
+        if request.method == 'POST':
+            code1 = request.form.get('code1')
+            code2 = request.form.get('code2')
+            code3 = request.form.get('code3')
+            code4 = request.form.get('code4')
+            code5 = request.form.get('code5')
+            code = code1+code2+code3+code4+code5
+            if code.lower() == res.lower():
+                username = session.get('username')
+                first_name = session.get('first_name')
+                last_name = session.get('last_name')
+                password = session.get('password')
+                birthday = session.get('birthday')
+                gender = session.get('gender')
+                about = session.get('about')
+                encpass = convertcode.convertcode(password)
+                profile_pic = statics['profile_pic']
+                info = login(username=username, first_name=first_name, last_name=last_name, password=encpass,
+                            birthday=birthday, gender=gender, email=email, profile_pic=profile_pic, time=time.time(), about=about)
+                db.session.add(info)
+                db.session.commit()
+                session.pop('code')
+                flash('Your account has been created successfully.', 'success')
+                return redirect('/login')
+            else:
+                flash('Entered verification code is incorrect.')
+                return render_template('code.html', email=email)
+        msg = Message('Verification Code', sender='factsworld1109@gmail.com', recipients=[email])
+        msg.body = f'Your help4you account verification code is "{res}". Please don\'t share it with others.'
+        mail.send(msg)
+        return render_template('code.html', email=email)
+    else:
+        return redirect('/signup')
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == 'POST':
@@ -134,10 +173,10 @@ def signup():
         session["birthday"] = request.form.get('birthday')
         session["gender"] = request.form.get('gender')
         session['about'] = request.form.get('about')
-        email = request.form.get('email')
+        session['email'] = request.form.get('email')
         sign_user = login.query.filter_by(
             username=session.get('username')).first()
-        sign_email = login.query.filter_by(email=email).first()
+        sign_email = login.query.filter_by(email=session.get('email')).first()
         if sign_user:
             flash('Username Used.')
         elif sign_email:
@@ -145,13 +184,10 @@ def signup():
         elif session.get('password') != rpassword:
             flash('Password and repeat password are different.')
         else:
-            token = s.dumps(email, salt='email-confirm')
-            msg = Message('Confirm Email ', sender='factsworld1109@gmail.com', recipients=[email])
-            link = url_for('verify', token=token, _external=True)
-            msg.body = 'Your link is {} but go on this link(will expire in 1 hr) from the same device and browser used for registration.'.format(
-                link)
-            mail.send(msg)
-            return render_template('box.html', email=email)
+            N = 5
+            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k = N))
+            session['code'] = res
+            return redirect('/code')
     return render_template('signup.html', title=f"{params['title']}: Sign Up for a new account", params=params)
 
 @app.route('/home', methods=["GET", "POST"])
@@ -299,30 +335,6 @@ def settings():
                     return redirect('/settings')
             return redirect('/settings')
     return render_template('settings.html', title=f'{params["title"]} : Settings')
-
-@app.route("/verify/<token>")
-def verify(token):
-    try:
-        email = s.loads(token, salt='email-confirm', max_age=3600)
-        username = session.get('username')
-        first_name = session.get('first_name')
-        last_name = session.get('last_name')
-        password = session.get('password')
-        birthday = session.get('birthday')
-        gender = session.get('gender')
-        about = session.get('about')
-        encpass = convertcode.convertcode(password)
-        profile_pic = statics['profile_pic']
-        info = login(username=username, first_name=first_name, last_name=last_name, password=encpass,
-                     birthday=birthday, gender=gender, email=email, profile_pic=profile_pic, time=time.time(), about=about)
-        db.session.add(info)
-        db.session.commit()
-        flash('Your account has been created successfully.', 'success')
-        return redirect('/login')
-    except SignatureExpired:
-        return render_template('404.html')
-    except BadSignature:
-        return render_template('404.html')
 
 @app.route("/verify2/<token>")
 @login_required
