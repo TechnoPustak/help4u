@@ -59,8 +59,8 @@
         31536000 %} {{ (qtime/2628288)|int }} Months {% else %} {{ (qtime/31536000)|int }} Years {% endif %} Ago {%
         endif %}{% endfor %} </h4>
         <div class="card-body">
-          {% if question.piclink %}
-          <img src="{{ question.piclink }}" style="width: 100%;" alt="{{ question.post }}"><br><br>{% endif %}
+          {% if question.piclink %}<a href="{{ question.piclink }}">
+          <img src="{{ question.piclink }}" style="width: 100%;" alt="{{ question.post }}"></a><br><br>{% endif %}
           <h3 class="card-title">{% for line in question.post.splitlines() %}{{ line }}<br>{% endfor %}</h3>
           <p class="card-text"><strong> Grade: {{ question.grade }}</strong></p>
           {% if current_user.is_authenticated %}
@@ -103,8 +103,8 @@
         31536000 %} {{ (qtime/2628288)|int }} Months {% else %} {{ (qtime/31536000)|int }} Years {% endif %} Ago {%
         endif %}{% endfor %} </h4>
         <div class="card-body">
-          {% if answer.piclink %}
-          <img src="{{ answer.piclink }}" style="width: 100%;" alt="{{ answer.answer }}"><br><br>{% endif %}
+          {% if answer.piclink %}<a href="{{ answer.piclink }}">
+          <img src="{{ answer.piclink }}" style="width: 100%;" alt="{{ answer.answer }}"></a><br><br>{% endif %}
           <h4 class="card-title">{% for line in answer.answer.splitlines() %}{{ line }}<br>{%
             endfor %}</h4>
         </div>
