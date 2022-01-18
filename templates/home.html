@@ -183,7 +183,7 @@ box-shadow: 2px 2px 3px rgb(0, 0, 0);
         endif %}{% endfor %} </h4>
         <div class="card-body">
           {% if question.piclink %}
-          <img src="{{ question.piclink }}" style="width: 100%;" alt=""><br><br>{% endif %}
+          <img src="{{ question.piclink }}" style="width: 100%;" alt="{{ question.post }}"><br><br>{% endif %}
           <h3 class="card-title">{% for line in question.post[:150].splitlines() %}{{ line }}<br>{% endfor %}{% if
             question.post|length>150 %}.....{% endif %}</h3>
           <p class="card-text"><strong> Grade: {{ question.grade }}</strong></p>

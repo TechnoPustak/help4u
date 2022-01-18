@@ -128,6 +128,7 @@ def code():
 
 @app.route("/", methods=["GET", "POST"])
 def index():
+    path = url_for('index', _external=True)
     if request.method == 'POST':
         name = request.form.get('name')
         email = request.form.get('email')
@@ -141,7 +142,7 @@ def index():
         <b>Message: </b>{message}
         '''
         mail.send(msg)
-    return render_template('index.html', params=params)
+    return render_template('index.html', params=params, path=path)
 
 @app.route("/login", methods=["GET", "POST"])
 def signin():
@@ -222,6 +223,7 @@ def home():
 
 @app.route('/answer/<int:sno>', methods=["GET", "POST"])
 def answer(sno):
+    path = url_for('answer', sno=sno, _external=True)
     page=request.args.get('page', 1, type=int)
     users = login.query.all()
     question = posts.query.filter_by(sno=sno).first()
@@ -246,7 +248,7 @@ def answer(sno):
         db.session.commit()
         return redirect('/answer/'+str(sno))
     if question:
-        return render_template('answer.html', title=f"{params['title']}: Give Answers", question=question, time=time.time(), users=users, sno=sno, answers=myanswers)
+        return render_template('answer.html', title=f"{params['title']}: {question.post[:30]}...", question=question, time=time.time(), users=users, sno=sno, answers=myanswers,  path=path)
     else:
         return redirect('/home')
 

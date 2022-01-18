@@ -4,8 +4,11 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
+    <meta name="description" content="{{ params['description'] }}" />
+    <meta name="author" content="{{ params['author'] }}" />
+    <meta name="keywords" content="{{ params['keywords'] }}" />
+    <link rel="canonical" href="{{ path }}">
+    <meta name="robots" content="index, follow">
     <title>{{ params['title'] }}</title>
     <!-- Favicon-->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='logo.ico') }}" />
