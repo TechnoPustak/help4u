@@ -18,9 +18,12 @@ auth = firebase.auth()
 storage = firebase.storage()
 
 
-def upload(path_local, path_on_cloud):
+def upload(path_local, path_on_cloud, type):
     im = Image.open(path_local)
-    im.thumbnail((800, 800))
+    if type=='profile_pic':
+        im.thumbnail((600, 600))
+    else:
+        im.thumbnail((800, 800))
     im.save('lol.png')
     storage.child(path_on_cloud).put("lol.png")
     return True

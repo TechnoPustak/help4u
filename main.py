@@ -205,7 +205,7 @@ def home():
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(
                     app.config['UPLOAD_FOLDER'], filename))
-                myfirebase.upload(filename, str(current_user.sno)+'/questions/'+psno+'.jpg')
+                myfirebase.upload(filename, str(current_user.sno)+'/questions/'+psno+'.jpg', 'post')
                 piclink = myfirebase.getfileurl(
                     str(current_user.sno)+'/questions/'+psno+'.jpg')
         else:
@@ -236,7 +236,7 @@ def answer(sno):
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(
                     app.config['UPLOAD_FOLDER'], filename))
-                myfirebase.upload(filename, str(current_user.sno)+'/answers/'+psno+'.jpg')
+                myfirebase.upload(filename, str(current_user.sno)+'/answers/'+psno+'.jpg', 'post')
                 piclink = myfirebase.getfileurl(
                     str(current_user.sno)+'/answers/'+psno+'.jpg')
         else:
@@ -329,7 +329,7 @@ def settings():
                     filename = secure_filename(file.filename)
                     file.save(os.path.join(
                         app.config['UPLOAD_FOLDER'], filename))
-                    myfirebase.upload(filename, str(current_user.sno)+'/profile_pic.png')
+                    myfirebase.upload(filename, str(current_user.sno)+'/profile_pic.png', 'profile_pic')
                     piclink = myfirebase.getfileurl(
                         str(current_user.sno)+'/profile_pic.png')
                     current_user.profile_pic = piclink

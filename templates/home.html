@@ -155,7 +155,7 @@ box-shadow: 2px 2px 3px rgb(0, 0, 0);
         </div>
         <div class="dropdown" style="cursor: pointer;">
           <div style="display: inline-block; margin-left: 20px;" class="dropdown-toggle" data-bs-toggle="dropdown">
-            <img alt='Your profile pic.' src=" {{ current_user.profile_pic }} " style="border-radius: 50%;" height="32"
+            <img alt='Your profile pic.' loading="lazy" src=" {{ current_user.profile_pic }} " style="border-radius: 50%;" height="32"
               width="32" />
           </div>
           <ul class="dropdown-menu mydrop fadeIn" aria-labelledby="dropdownMenu">
@@ -173,7 +173,7 @@ box-shadow: 2px 2px 3px rgb(0, 0, 0);
     <h4 class="card-header">
       {% for user in users %}{% if user.sno == question.user %}<a style="text-decoration: none; color: inherit;"
         href="/account/{{ user.username }}">
-        <img alt="User's profile pic." src=" {{ user.profile_pic }} " style="border-radius: 50%;" height="50"
+        <img alt="User's profile pic." loading="lazy" src=" {{ user.profile_pic }} " style="border-radius: 50%;" height="50"
           width="50" /> {{ user.first_name }} {{
         user.last_name }}</a> &bull; {{ question.subject }} &bull;
       {% set qtime = time|int-question.time|int %}
@@ -183,7 +183,7 @@ box-shadow: 2px 2px 3px rgb(0, 0, 0);
         endif %}{% endfor %} </h4>
         <div class="card-body">
           {% if question.piclink %}<a href="{{ question.piclink }}">
-          <img src="{{ question.piclink }}" style="width: 100%;" alt="{{ question.post }}"></a><br><br>{% endif %}
+          <img src="{{ question.piclink }}" loading="lazy" style="width: 100%;" alt="{{ question.post }}"></a><br><br>{% endif %}
           <h3 class="card-title">{% for line in question.post[:150].splitlines() %}{{ line }}<br>{% endfor %}{% if
             question.post|length>150 %}.....{% endif %}</h3>
           <p class="card-text"><strong> Grade: {{ question.grade }}</strong></p>
