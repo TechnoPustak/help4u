@@ -7,7 +7,7 @@
         "email": "factsworld1109@gmail.com",
         "email-password": "pnhnywcnwixzhhie",
         "per_page":5,
-        "host":"development"
+        "host":"production"
     },
     "statics": {
         "profile_pic": "https://help4you.herokuapp.com/static/profile.png",
