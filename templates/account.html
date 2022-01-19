@@ -176,6 +176,7 @@
         </div>
     </div>
     <div class="pdiv">
+        {% set tques = posts.query.filter_by(user=user.sno).all()|length %}
         <h3 class="name mt-3" style="text-align: center;">Questions Asked : {{ tques }}</h3>
         <hr>
         <table class="table table-borderless table-hover" style="width: 99%; margin: auto;">
@@ -215,6 +216,7 @@
     </div><br>
     <br>
     <div class="pdiv">
+        {% set tans = tanswers.query.filter_by(user=user.sno).all()|length %}
         <h3 class="name mt-3" style="text-align: center;">Answers Given : {{ tans }}</h3>
         <hr>
         <table class="table table-borderless table-hover" style="width: 99%; margin: auto;">
@@ -229,9 +231,15 @@
                 {% for answer in answers.items %}
                 <tr>
                     <th scope="row">{{ loop.index + (per_page*(answers.page-1)) }}</th>
-                    <td><a class="mylink" href="/answer/{{ answer.question_id }}">{{
+                    {% set allq = posts.query.all() %}
+                    {% for i in allq %}
+                    {% if i.sno == answer.question_id %}
+                    {% set currentq = posts.query.filter_by(sno=i.sno).first().sno %}
+                    {% set allanswers = tanswers.query.filter_by(question_id=currentq).order_by(tanswers.sno.desc()).all() %}
+                    {% set pagenum = (((allanswers|list).index(answer))/per_page)|int + 1 %}
+                    <td><a class="mylink" href="/answer/{{ answer.question_id }}?page={{ pagenum }}#{{ answer.sno }}">{{
                             answer.answer[:150] }}{% if
-                            answer.answer|length>150 %}.....{% endif %}</a></td>
+                            answer.answer|length>150 %}.....{% endif %}</a></td>{% endif %}{% endfor %}
                     {% if user==current_user %}<td><a class="mylink" href="/delete/answer/{{ answer.sno }}"><button
                                 type="button" class="btn btn-danger">Delete</button></a></td>{% endif %}
                 </tr>

@@ -259,14 +259,13 @@ def account(username):
     user = login.query.filter_by(username=username).first()
     if user:
         queastions = posts.query.filter_by(user=user.sno).order_by(posts.sno.desc()).paginate(page=page, per_page=per_page)
-        tques = len(posts.query.filter_by(user=user.sno).all())
         tans = len(answers.query.filter_by(user=user.sno).all())
         myanswers = answers.query.filter_by(user=user.sno).order_by(answers.sno.desc()).paginate(page=apage, per_page=per_page)
         timep = time.localtime(int(float(user.time)))
         joined = f'{timep.tm_mday} {month_name[timep.tm_mon]}, {timep.tm_year}'
         bday = user.birthday.split('/')
         birthday = f'{bday[0]} {month_name[int(bday[1])]}, {bday[-1]}'
-        return render_template('account.html', tques=tques, tans=tans, title=f'Help4You Account @ {user.username}', user=user, joined=joined, birthday=birthday, questions=queastions, answers=myanswers, per_page=per_page)
+        return render_template('account.html', title=f'Help4You Account @ {user.username}', user=user, joined=joined, birthday=birthday, questions=queastions, answers=myanswers, per_page=per_page, posts=posts, tanswers=answers)
     else:
         return render_template('404.html')
 
