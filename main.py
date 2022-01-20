@@ -29,11 +29,8 @@ mail = Mail(app)
 s = URLSafeTimedSerializer('my-secret')
 sslify = SSLify(app)
 
-if params['host'] == 'development':
-    database = 'postgresql://qnxrojcyfjfifp:5429b03e63250378f9dc6a9b3f0b732d642fc9921d3316089caed66c87961324@ec2-34-243-180-8.eu-west-1.compute.amazonaws.com:5432/d8vbf4qkk83en7'
-else:
-    database = os.environ.get('DATABASE_URL')
-    database = database[:8] + 'ql' + database[8:]
+database = os.environ.get('DATABASE_URL')
+database = database[:8] + 'ql' + database[8:]
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -113,8 +110,9 @@ def code():
                             birthday=birthday, gender=gender, email=email, profile_pic=profile_pic, time=time.time(), about=about)
                 db.session.add(info)
                 db.session.commit()
+                user = login.query.filter_by(username=username).first()
                 session.pop('code')
-                flash('Your account has been created successfully.', 'success')
+                login_user(user, remember=True)
                 return redirect('/login')
             else:
                 flash('Entered verification code is incorrect.')
@@ -218,6 +216,17 @@ def home():
                      subject=subject, time=time.time(), grade=grade, piclink=piclink)
         db.session.add(info)
         db.session.commit()
+        question_sno = posts.query.filter_by().order_by(posts.sno.desc()).first().sno
+        qlink = url_for("answer", sno=question_sno, _external=True)
+        emails = [ i.email for i in users ]
+        msg = Message(f'New post by {current_user.username} on Help4You', sender=params['email'], recipients=emails)
+        msg.html = f'''
+        <h1 style='color:red;'>A new post by {current_user.first_name} {current_user.last_name} @ {current_user.username} on Help4You Website.</h1>
+        <p style='font-size:20px;'>{post}</p><p style='font-size:15px;'>Subject: {subject}<br>Grade: {grade}</p>
+        <img src='{piclink}' width='100%'><br>
+        <a href='{qlink}'><button style='font-size:20px;background-color:aqua;border:1px solid black;border-radius:2px;'><strong>Go to the post</strong></button></a>
+        '''
+        mail.send(msg)
         return redirect('/home')
     return render_template("home.html", title=f"{params['title']}: Ask and Answer Questions", questions=questions, users=users, time=time.time())
 
@@ -227,6 +236,7 @@ def answer(sno):
     page=request.args.get('page', 1, type=int)
     users = login.query.all()
     question = posts.query.filter_by(sno=sno).first()
+    allanswers = answers.query.filter_by(question_id=sno).all()
     myanswers = answers.query.filter_by(question_id=sno).order_by(answers.sno.desc()).paginate(page=page, per_page=per_page)
     if request.method == 'POST':
         file = request.files['file']
@@ -246,6 +256,20 @@ def answer(sno):
             answer=myanswer, user=current_user.sno, question_id=sno, time=time.time(), piclink=piclink)
         db.session.add(answer_info)
         db.session.commit()
+        qlink = url_for("answer", sno=question.sno, _external=True)
+        emails = [login.query.filter_by(sno=i.user).first().email for i in allanswers]
+        user_email = login.query.filter_by(sno=question.user).first().email
+        emails.append(user_email)
+        emails.append(current_user.email)
+        emails = list(set(emails))
+        msg = Message(f'Reply by {current_user.username} on Help4You', sender=params['email'], recipients=emails)
+        msg.html = f'''
+        <h1 style='color:red;'>Reply posted by {current_user.first_name} {current_user.last_name} @ {current_user.username} on Help4You Website.</h1>
+        <p style='font-size:20px;'>Reply of post: {question.post}</p><p style='font-size:15px;'>Subject: {question.subject}<br>Grade: {question.grade}</p>
+        <img src='{piclink}' width='100%'><br>
+        <a href='{qlink}'><button style='font-size:20px;background-color:aqua;border:1px solid black;border-radius:2px;'><strong>Click here to view reply.</strong></button></a>
+        '''
+        mail.send(msg)
         return redirect('/answer/'+str(sno))
     if question:
         return render_template('answer.html', title=f"{params['title']}: {question.post[:30]}...", question=question, time=time.time(), users=users, sno=sno, answers=myanswers,  path=path)

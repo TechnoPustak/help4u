@@ -55,7 +55,7 @@ box-shadow: 2px 2px 3px rgb(0, 0, 0);
 
 .question {
 position: fixed;
-width: 130px;
+padding: 0 6px;
 height: auto;
 bottom: 60px;
 right: 110px;
@@ -88,7 +88,7 @@ box-shadow: 2px 2px 3px rgb(0, 0, 0);
             </div>
           </label>
         </div>
-        <h4 class="title" style="text-align: center; margin-bottom: 0;">Upload Question Image</h4>
+        <h4 class="title" style="text-align: center; margin-bottom: 0;">Upload An Image</h4>
         <p style="text-align: center;">(Optional)</p><br><br>
         <div class="form-group">
           <label for="subject">Select Subject:</label>
@@ -130,7 +130,7 @@ box-shadow: 2px 2px 3px rgb(0, 0, 0);
           </select>
         </div>
         <div class="form-group">
-          <label for="question">Your Question</label>
+          <label for="question">Your Post Content:</label>
           <textarea class="form-control" id="question" name="question" rows="5"
             style="resize: vertical; font-size: 18px;" required></textarea>
         </div><br>
@@ -187,7 +187,7 @@ box-shadow: 2px 2px 3px rgb(0, 0, 0);
           <h3 class="card-title">{% for line in question.post[:150].splitlines() %}{{ line }}<br>{% endfor %}{% if
             question.post|length>150 %}.....{% endif %}</h3>
           <p class="card-text"><strong> Grade: {{ question.grade }}</strong></p>
-          <a href="/answer/{{ question.sno }}" class="btn btn-primary">Answer this question</a>
+          <a href="/answer/{{ question.sno }}" class="btn btn-primary">Reply on this post</a>
         </div>
   </div>
   {% endfor %}<br>
@@ -204,7 +204,7 @@ box-shadow: 2px 2px 3px rgb(0, 0, 0);
     {% endif %}
     {% endfor %}
   </div>
-  <div class='question'>Ask your question</div>
+  <div class='question'>Add a post</div>
   <button id='myBtn' class="float">
     <svg xmlns="http://www.w3.org/2000/svg" width="50%" height="auto" fill="currentColor" class="bi bi-plus"
       viewBox="0 0 16 16">

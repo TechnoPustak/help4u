@@ -77,10 +77,10 @@
                 </div>
               </label>
             </div>
-            <h4 class="title" style="text-align: center; margin-bottom: 0;">Upload Answer Image</h4>
+            <h4 class="title" style="text-align: center; margin-bottom: 0;">Upload An Image</h4>
             <p style="text-align: center;">(Optional)</p><br>
             <div class="form-group">
-              <label for="answer" style="font-size: 20px;"><strong>Enter your answer here:
+              <label for="answer" style="font-size: 20px;"><strong>Enter your reply here:
                 </strong></label><br>
               <textarea class="form-control" id="answer" name="answer" rows="5"
                 style="resize: vertical; font-size: 23px;" required></textarea>
@@ -89,7 +89,7 @@
           </form>{% endif %}
         </div>
   </div><br>
-  <h2 class="card-title" style="margin-left: 3%;"><strong>Answers: </strong></h2>
+  <h2 class="card-title" style="margin-left: 3%;"><strong>Replies: </strong></h2>
   {% for answer in answers.items %}
   <div class="card answer" id="{{ answer.sno }}">
     <h4 class="card-header">
