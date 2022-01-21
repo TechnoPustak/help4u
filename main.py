@@ -126,21 +126,10 @@ def code():
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    path = url_for('index', _external=True)
-    if request.method == 'POST':
-        name = request.form.get('name')
-        email = request.form.get('email')
-        phone = request.form.get('phone')
-        message = request.form.get('message')
-        msg = Message("Feedback message from Help4You", sender=params['email'], recipients=["ashutoshthakur11sep@gmail.com"])
-        msg.html = f'''
-        <b>Name: </b>{name}<br>
-        <b>Email: </b>{email}<br>
-        <b>Phone: </b>{phone}<br>
-        <b>Message: </b>{message}
-        '''
-        mail.send(msg)
-    return render_template('index.html', params=params, path=path)
+    if not current_user.is_authenticated:
+        return redirect('/signup')
+    else:
+        return redirect('/home')
 
 @app.route("/login", methods=["GET", "POST"])
 def signin():
@@ -163,6 +152,7 @@ def signin():
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
+    path = url_for('signup', _external=True)
     if request.method == 'POST':
         session["username"] = request.form.get('username').lower()
         session["first_name"] = request.form.get('first_name')
@@ -187,7 +177,7 @@ def signup():
             res = ''.join(random.choices(string.ascii_uppercase + string.digits, k = N))
             session['code'] = res
             return redirect('/code')
-    return render_template('signup.html', title=f"{params['title']}: Sign Up for a new account", params=params)
+    return render_template('signup.html', title=f"{params['title']}: Sign Up for a new account", params=params, path=path)
 
 @app.route('/home', methods=["GET", "POST"])
 @login_required

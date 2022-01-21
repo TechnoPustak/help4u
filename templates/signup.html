@@ -9,6 +9,8 @@
     <meta name="description" content="{{ params['description'] }}">
     <meta name="author" content="{{ params['author'] }}">
     <meta name="keywords" content="{{ params['keywords'] }}">
+    <link rel="canonical" href="{{ path }}">
+    <meta name="robots" content="index, follow">
 
     <!-- Title Page-->
     <title>{{ title }}</title>
@@ -46,12 +48,11 @@
                     {% endif %}
                     {% endwith %}
                     <h1 class="title" style="color:rgba(192, 7, 248, 0.925); text-align:center;"><strong>{{
-                            params['title'] }}<br> -- Beta Version</strong></h1>
+                            params['title'] }}</strong></h1>
                     <img src="{{ url_for('static', filename='logo.png') }}"
                         style="width:100px; margin: 0 auto; display: block;" id="icon" alt="Logo" /><br>
                     <h2 class="title" style="text-align: center;">{{ title }}</h2>
-                    <h3 class="title">The website where you can ask questions and give answers about homeworks, study,
-                        or any other problems.</h3>
+                    <h3 class="title">The website where you share knowledge and express your thoughts.</h3>
                     <form method="POST" action="/signup">
                         <div class="row row-space">
                             <div class="col-2">
