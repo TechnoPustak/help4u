@@ -51,19 +51,22 @@
                             params['title'] }}</strong></h1>
                     <img src="{{ url_for('static', filename='logo.png') }}"
                         style="width:100px; margin: 0 auto; display: block;" id="icon" alt="Logo" /><br>
-                    <h2 class="title" style="text-align: center;">{{ title }}</h2>
                     <h3 class="title">The website where you share knowledge and express your thoughts.</h3>
+                    <h2 class="title" style="text-align: center;">{{ title }}</h2>
+                    <a href='/login'><button
+                            style='position: relative; left:50%; transform: translateX(-50%);cursor: pointer; border-radius: 4px; background-color: #008CBA; font-size: 20px; padding: 12px 28px;'>Click
+                            here if you already have an account</button></a>
                     <form method="POST" action="/signup">
                         <div class="row row-space">
                             <div class="col-2">
                                 <div class="input-group">
-                                    <label class="label">Username</label>
+                                    <label class="label"><br>Username</label>
                                     <input class="input--style-4" type="text" name="username" id="username" required>
                                 </div>
                             </div>
                             <div class="col-2">
                                 <div class="input-group">
-                                    <label class="label">Email</label>
+                                    <label class="label"><br>Email</label>
                                     <input class="input--style-4" type="email" name="email" id="email" required>
                                 </div>
                             </div>
@@ -134,12 +137,10 @@
                             </div>
                         </div>
                         <div class="p-t-15">
-                            <button class="btn btn--radius-2 btn--blue" type="submit">Submit</button>
+                            <button style="position: relative; left:50%; transform: translateX(-50%);"
+                                class="btn btn--radius-2 btn--blue" type="submit">Submit</button>
                         </div>
-                    </form><br>
-                    <a href='/login'><button
-                            style='cursor: pointer; border-radius: 4px; background-color: #008CBA; font-size: 20px; padding: 12px 28px;'>Already
-                            Have an Account</button></a>
+                    </form>
                 </div>
             </div>
         </div>

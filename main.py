@@ -167,7 +167,7 @@ def signup():
             username=session.get('username')).first()
         sign_email = login.query.filter_by(email=session.get('email')).first()
         if sign_user:
-            flash('Username Used.')
+            flash('This username has been used.')
         elif sign_email:
             flash('Already an account with this email.')
         elif session.get('password') != rpassword:

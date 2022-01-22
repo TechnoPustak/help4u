@@ -6,7 +6,8 @@
         "keywords": "help4you, help, helping, study, coding, programming, brainly, quora, study helper, reddit, help for you, help four you, helpforyou, helping hand, knowledge, sharing",
         "email": "factsworld1109@gmail.com",
         "email-password": "pnhnywcnwixzhhie",
-        "per_page":5
+        "per_page":5,
+        "version":"1.11.12"
     },
     "statics": {
         "profile_pic": "https://help4you.herokuapp.com/static/profile.png",
