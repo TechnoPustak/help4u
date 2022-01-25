@@ -3,6 +3,7 @@
 
 <head>
   <title>{{ title }}</title>
+  <meta property="og:title" content="{{ title }}" />
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="{{ url_for('static', filename='logo.ico') }}" type='ico/img'>
@@ -88,7 +89,7 @@
 
     .post {
       background-color: #7f53ac;
-background-image: linear-gradient(315deg, #7f53ac 0%, #647dee 74%);
+      background-image: linear-gradient(315deg, #7f53ac 0%, #647dee 74%);
       width: 95%;
       margin: 5px auto;
       padding: 10px;

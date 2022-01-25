@@ -1,16 +1,22 @@
 {% extends "layout2.html" %}
 {% block body %}
-  .answer {
-    background-color: #abe9cd;
-    background-image: linear-gradient(315deg, #abe9cd 0%, #3eadcf 74%);
-    width: 95%;
-    margin: 5px auto;
-    padding: 10px;
-    border-radius: 20px;
-  }
+.answer {
+background-color: #abe9cd;
+background-image: linear-gradient(315deg, #abe9cd 0%, #3eadcf 74%);
+width: 95%;
+margin: 5px auto;
+padding: 10px;
+border-radius: 20px;
+}
 </style>
 <meta name="description" content="{{ question.post[:150] }}">
+<meta property="og:description" content="{{ question.post[:150] }}" />
+{% if question.piclink %}<meta property="og:image" content="{{ question.piclink }}" />{% endif %}
+<meta property="og:image:alt" content="{{ question.post[:125] }}" />
+<meta property="og:site_name" content="{{ params['title'] }}" />
+<meta property="og:url" content="{{ path }}" />
 <link rel="canonical" href="{{ path }}">
+<meta property="og:type" content="website" />
 <meta name="robots" content="index, follow">
 </head>
 
@@ -33,7 +39,8 @@
         {% if current_user.is_authenticated %}
         <div class="dropdown" style="cursor: pointer;">
           <div style="display: inline-block; margin-left: 20px;" class="dropdown-toggle" data-bs-toggle="dropdown">
-            <img alt='Your profile pic.' loading="lazy" src=" {{ current_user.profile_pic }} " style="border-radius: 50%;" height="32" width="32" />
+            <img alt='Your profile pic.' loading="lazy" src=" {{ current_user.profile_pic }} "
+              style="border-radius: 50%;" height="32" width="32" />
           </div>
           <ul class="dropdown-menu mydrop fadeIn" aria-labelledby="dropdownMenu">
             <li><a class="dropdown-item myitem" href="/account/{{ current_user.username }}">Account</a></li>
@@ -50,9 +57,11 @@
   </div>{% endif %}
   <div class="card post">
     <h4 class="card-header" style="border-bottom: black solid 1px;">
-      {% for user in users %}{% if user.sno == question.user %}<a style="text-decoration: none; color: inherit;" href="/account/{{ user.username }}">
-      <img alt="User's profile pic." loading="lazy" src=" {{ user.profile_pic }} " style="border-radius: 50%;" height="50" width="50" /> {{ user.first_name }} {{
-      user.last_name }}</a> &bull; {{ question.subject }} &bull;
+      {% for user in users %}{% if user.sno == question.user %}<a style="text-decoration: none; color: inherit;"
+        href="/account/{{ user.username }}">
+        <img alt="User's profile pic." loading="lazy" src=" {{ user.profile_pic }} " style="border-radius: 50%;"
+          height="50" width="50" /> {{ user.first_name }} {{
+        user.last_name }}</a> &bull; {{ question.subject }} &bull;
       {% set qtime = time|int-question.time|int %}
       {% if qtime < 60 %} {{ qtime|int }} Seconds {% elif qtime < 3600 %} {{ (qtime/60)|int }} Minutes {% elif qtime <
         86400 %} {{ (qtime/3600)|int }} Hours {% elif qtime < 2628288 %} {{ (qtime/86400)|int }} Days {% elif qtime <
@@ -60,17 +69,16 @@
         endif %}{% endfor %} </h4>
         <div class="card-body">
           {% if question.piclink %}<a href="{{ question.piclink }}">
-          <img src="{{ question.piclink }}" loading="lazy" style="width: 100%;" alt="{{ question.post }}"></a><br><br>{% endif %}
+            <img src="{{ question.piclink }}" loading="lazy" style="width: 100%;"
+              alt="{{ question.post[:125] }}"></a><br><br>{% endif %}
           <h3 class="card-title">{% for line in question.post.splitlines() %}{{ line }}<br>{% endfor %}</h3>
           <p class="card-text"><strong> Grade: {{ question.grade }}</strong></p>
           {% if current_user.is_authenticated %}
           <form action="/answer/{{ sno }}" method="POST" enctype="multipart/form-data">
             <div class="row row-space">
               <label style="cursor: pointer;">
-                <input style='display:none;' type="file" accept="image/*"
-                  onchange="document.getElementById('upload').src = window.URL.createObjectURL(this.files[0]);
-                  document.getElementById('upload').style.width = '100%';" name="file"
-                  id='file' />
+                <input style='display:none;' type="file" accept="image/*" onchange="document.getElementById('upload').src = window.URL.createObjectURL(this.files[0]);
+                  document.getElementById('upload').style.width = '100%';" name="file" id='file' />
                 <div style="position: relative; left: 0; top: 0;">
                   <img src="{{ url_for('static', filename='images/upload.png') }}"
                     style="width:100px; margin: 0 auto; display: block;" id="upload" alt="Logo" />
@@ -93,10 +101,12 @@
   {% for answer in answers.items %}
   <div class="card answer" id="{{ answer.sno }}">
     <h4 class="card-header">
-      {% for user in users %}{% if user.sno == answer.user %}<a style="text-decoration: none; color: inherit;" href="/account/{{ user.username }}">
-      <img alt="User's profile pic." src=" {{ user.profile_pic }} " style="border-radius: 50%;" height="50" width="50" /> {{ user.first_name
-      }} {{
-      user.last_name }}</a> &bull;
+      {% for user in users %}{% if user.sno == answer.user %}<a style="text-decoration: none; color: inherit;"
+        href="/account/{{ user.username }}">
+        <img alt="User's profile pic." src=" {{ user.profile_pic }} " style="border-radius: 50%;" height="50"
+          width="50" /> {{ user.first_name
+        }} {{
+        user.last_name }}</a> &bull;
       {% set qtime = time|int-answer.time|int %}
       {% if qtime < 60 %} {{ qtime|int }} Seconds {% elif qtime < 3600 %} {{ (qtime/60)|int }} Minutes {% elif qtime <
         86400 %} {{ (qtime/3600)|int }} Hours {% elif qtime < 2628288 %} {{ (qtime/86400)|int }} Days {% elif qtime <
@@ -104,7 +114,7 @@
         endif %}{% endfor %} </h4>
         <div class="card-body">
           {% if answer.piclink %}<a href="{{ answer.piclink }}">
-          <img src="{{ answer.piclink }}" style="width: 100%;" alt="{{ answer.answer }}"></a><br><br>{% endif %}
+            <img src="{{ answer.piclink }}" style="width: 100%;" alt="{{ answer.answer[:125] }}"></a><br><br>{% endif %}
           <h4 class="card-title">{% for line in answer.answer.splitlines() %}{{ line }}<br>{%
             endfor %}</h4>
         </div>
@@ -116,7 +126,8 @@
     {% if page_num == answers.page %}
     <a class="btn btn-primary" href="#">{{ page_num }}</a>
     {% else %}
-    <a class="btn btn-outline-primary" href="{{ url_for('answer', sno=question.sno, page=page_num) }}">{{ page_num }}</a>
+    <a class="btn btn-outline-primary" href="{{ url_for('answer', sno=question.sno, page=page_num) }}">{{ page_num
+      }}</a>
     {% endif %}
     {% else %}
     ...

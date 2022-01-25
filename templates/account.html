@@ -177,7 +177,7 @@
     </div>
     <div class="pdiv">
         {% set tques = posts.query.filter_by(user=user.sno).all()|length %}
-        <h3 class="name mt-3" style="text-align: center;">Questions Asked : {{ tques }}</h3>
+        <h3 class="name mt-3" style="text-align: center;">Total Posts : {{ tques }}</h3>
         <hr>
         <table class="table table-borderless table-hover" style="width: 99%; margin: auto;">
             <thead class="thead-dark">
@@ -217,7 +217,7 @@
     <br>
     <div class="pdiv">
         {% set tans = tanswers.query.filter_by(user=user.sno).all()|length %}
-        <h3 class="name mt-3" style="text-align: center;">Answers Given : {{ tans }}</h3>
+        <h3 class="name mt-3" style="text-align: center;">Total Replies : {{ tans }}</h3>
         <hr>
         <table class="table table-borderless table-hover" style="width: 99%; margin: auto;">
             <thead class="thead-dark">

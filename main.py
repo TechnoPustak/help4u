@@ -262,7 +262,7 @@ def answer(sno):
         mail.send(msg)
         return redirect('/answer/'+str(sno))
     if question:
-        return render_template('answer.html', title=f"{params['title']}: {question.post[:30]}...", question=question, time=time.time(), users=users, sno=sno, answers=myanswers,  path=path)
+        return render_template('answer.html',params=params, title=f"{params['title']}: {question.post[:30]}...", question=question, time=time.time(), users=users, sno=sno, answers=myanswers,  path=path)
     else:
         return redirect('/home')
 
