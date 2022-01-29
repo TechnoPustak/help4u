@@ -194,8 +194,7 @@ def home():
     users = login.query.all()
     if request.method == 'POST':
         followu = request.form.get('followingu')
-        print(followu)
-        if followu!='None':
+        if followu!=None:
             following = login.query.filter_by(sno=current_user.sno).first().following
             if following!=None:
                 followingl = following.split(';')
@@ -231,15 +230,15 @@ def home():
             db.session.commit()
             question_sno = posts.query.filter_by().order_by(posts.sno.desc()).first().sno
             qlink = url_for("answer", sno=question_sno, _external=True)
-            emails = [ i.email for i in users ]
-            msg = Message(f'New post by {current_user.username} on Help4You', sender=params['email'], recipients=emails)
-            msg.html = f'''
-            <h1 style='color:red;'>A new post by {current_user.first_name} {current_user.last_name} @ {current_user.username} on Help4You Website.</h1>
-            <p style='font-size:20px;'>{post}</p><p style='font-size:15px;'>Subject: {subject}<br>Grade: {grade}</p>
-            <img src='{piclink}' width='100%'><br>
-            <a href='{qlink}'><button style='font-size:20px;background-color:aqua;border:1px solid black;border-radius:2px;'><strong>Go to the post</strong></button></a>
-            '''
-            # mail.send(msg)
+            for i in users:
+                msg = Message(f'New post by {current_user.username} on Help4You', sender=params['email'], recipients=[i.email])
+                msg.html = f'''
+                <h1 style='color:red;'>A new post by {current_user.first_name} {current_user.last_name} @ {current_user.username} on Help4You Website.</h1>
+                <p style='font-size:20px;'>{post}</p><p style='font-size:15px;'>Subject: {subject}<br>Grade: {grade}</p>
+                <img src='{piclink}' width='100%'><br>
+                <a href='{qlink}'><button style='font-size:20px;background-color:aqua;border:1px solid black;border-radius:2px;'><strong>Go to the post</strong></button></a>
+                '''
+                # mail.send(msg)
             return redirect('/home')
     return render_template("home.html",login=login, title=f"{params['title']}: Ask and Answer Questions", questions=questions, users=users, time=time.time(), following=followingu)
 
