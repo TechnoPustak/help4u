@@ -29,6 +29,7 @@ mail = Mail(app)
 s = URLSafeTimedSerializer('my-secret')
 sslify = SSLify(app)
 
+# heroku pg:psql postgresql-infinite-45978 --app help4you
 database = os.environ.get('DATABASE_URL')
 database = database[:8] + 'ql' + database[8:]
 
@@ -58,6 +59,7 @@ class login(UserMixin, db.Model):
     profile_pic = db.Column(db.String(), nullable=False)
     time = db.Column(db.String(100), nullable=False)
     about = db.Column(db.String(), nullable=True)
+    following = db.Column(db.String(), nullable=True)
 
 class posts(db.Model):
     sno = db.Column(db.Integer, primary_key=True)
@@ -183,42 +185,63 @@ def signup():
 @login_required
 def home():
     page=request.args.get('page', 1, type=int)
+    followingu = login.query.filter_by(sno=current_user.sno).first().following
+    if followingu!=None:
+        followingu = followingu.split(';')
+    else:
+        followingu = []
     questions = posts.query.order_by(posts.sno.desc()).paginate(page=page, per_page=per_page)
     users = login.query.all()
     if request.method == 'POST':
-        file = request.files['file']
-        if file:
-            if file.filename != '':
-                psno = str(len(posts.query.all()) + 1)
-                filename = secure_filename(file.filename)
-                file.save(os.path.join(
-                    app.config['UPLOAD_FOLDER'], filename))
-                myfirebase.upload(filename, str(current_user.sno)+'/questions/'+psno+'.jpg', 'post')
-                piclink = myfirebase.getfileurl(
-                    str(current_user.sno)+'/questions/'+psno+'.jpg')
+        followu = request.form.get('followingu')
+        print(followu)
+        if followu!='None':
+            following = login.query.filter_by(sno=current_user.sno).first().following
+            if following!=None:
+                followingl = following.split(';')
+                if followu in followingl:
+                    followingl.remove(followu)
+                    following = ';'.join(followingl)
+                    if following == '':
+                        following=None
+                else:
+                    following+=';'+followu
+            else:
+                following=followu
+            current_user.following=following
+            db.session.commit()
+            return redirect('/home')
         else:
-            piclink=None
-        username = current_user.sno
-        post = request.form.get('question')
-        subject = request.form.get('subject')
-        grade = request.form.get('grade')
-        info = posts(user=username, post=post,
-                     subject=subject, time=time.time(), grade=grade, piclink=piclink)
-        db.session.add(info)
-        db.session.commit()
-        question_sno = posts.query.filter_by().order_by(posts.sno.desc()).first().sno
-        qlink = url_for("answer", sno=question_sno, _external=True)
-        emails = [ i.email for i in users ]
-        msg = Message(f'New post by {current_user.username} on Help4You', sender=params['email'], recipients=emails)
-        msg.html = f'''
-        <h1 style='color:red;'>A new post by {current_user.first_name} {current_user.last_name} @ {current_user.username} on Help4You Website.</h1>
-        <p style='font-size:20px;'>{post}</p><p style='font-size:15px;'>Subject: {subject}<br>Grade: {grade}</p>
-        <img src='{piclink}' width='100%'><br>
-        <a href='{qlink}'><button style='font-size:20px;background-color:aqua;border:1px solid black;border-radius:2px;'><strong>Go to the post</strong></button></a>
-        '''
-        mail.send(msg)
-        return redirect('/home')
-    return render_template("home.html", title=f"{params['title']}: Ask and Answer Questions", questions=questions, users=users, time=time.time())
+            file = request.files['file']
+            if file:
+                if file.filename != '':
+                    psno = str(len(posts.query.all()) + 1)
+                    myfirebase.upload(file, str(current_user.sno)+'/questions/'+psno+'.jpg', 'post')
+                    piclink = myfirebase.getfileurl(
+                        str(current_user.sno)+'/questions/'+psno+'.jpg')
+            else:
+                piclink=None
+            username = current_user.sno
+            post = request.form.get('question')
+            subject = request.form.get('subject')
+            grade = request.form.get('grade')
+            info = posts(user=username, post=post,
+                        subject=subject, time=time.time(), grade=grade, piclink=piclink)
+            db.session.add(info)
+            db.session.commit()
+            question_sno = posts.query.filter_by().order_by(posts.sno.desc()).first().sno
+            qlink = url_for("answer", sno=question_sno, _external=True)
+            emails = [ i.email for i in users ]
+            msg = Message(f'New post by {current_user.username} on Help4You', sender=params['email'], recipients=emails)
+            msg.html = f'''
+            <h1 style='color:red;'>A new post by {current_user.first_name} {current_user.last_name} @ {current_user.username} on Help4You Website.</h1>
+            <p style='font-size:20px;'>{post}</p><p style='font-size:15px;'>Subject: {subject}<br>Grade: {grade}</p>
+            <img src='{piclink}' width='100%'><br>
+            <a href='{qlink}'><button style='font-size:20px;background-color:aqua;border:1px solid black;border-radius:2px;'><strong>Go to the post</strong></button></a>
+            '''
+            # mail.send(msg)
+            return redirect('/home')
+    return render_template("home.html",login=login, title=f"{params['title']}: Ask and Answer Questions", questions=questions, users=users, time=time.time(), following=followingu)
 
 @app.route('/answer/<int:sno>', methods=["GET", "POST"])
 def answer(sno):
@@ -233,10 +256,7 @@ def answer(sno):
         if file:
             if file.filename != '':
                 psno = str(len(answers.query.all()) + 1)
-                filename = secure_filename(file.filename)
-                file.save(os.path.join(
-                    app.config['UPLOAD_FOLDER'], filename))
-                myfirebase.upload(filename, str(current_user.sno)+'/answers/'+psno+'.jpg', 'post')
+                myfirebase.upload(file, str(current_user.sno)+'/answers/'+psno+'.jpg', 'post')
                 piclink = myfirebase.getfileurl(
                     str(current_user.sno)+'/answers/'+psno+'.jpg')
         else:
@@ -271,15 +291,19 @@ def account(username):
     page=request.args.get('page', 1, type=int)
     apage=request.args.get('apage', 1, type=int)
     user = login.query.filter_by(username=username).first()
+    followingu = login.query.filter_by(sno=user.sno).first().following
+    if followingu!=None:
+        followingu = followingu.split(';')
+    else:
+        followingu = []
     if user:
         queastions = posts.query.filter_by(user=user.sno).order_by(posts.sno.desc()).paginate(page=page, per_page=per_page)
-        tans = len(answers.query.filter_by(user=user.sno).all())
         myanswers = answers.query.filter_by(user=user.sno).order_by(answers.sno.desc()).paginate(page=apage, per_page=per_page)
         timep = time.localtime(int(float(user.time)))
         joined = f'{timep.tm_mday} {month_name[timep.tm_mon]}, {timep.tm_year}'
         bday = user.birthday.split('/')
         birthday = f'{bday[0]} {month_name[int(bday[1])]}, {bday[-1]}'
-        return render_template('account.html', title=f'Help4You Account @ {user.username}', user=user, joined=joined, birthday=birthday, questions=queastions, answers=myanswers, per_page=per_page, posts=posts, tanswers=answers)
+        return render_template('account.html',following=followingu, title=f'Help4You Account @ {user.username}', user=user, joined=joined, birthday=birthday, questions=queastions, answers=myanswers, per_page=per_page,login=login, posts=posts, tanswers=answers)
     else:
         return render_template('404.html')
 
@@ -339,10 +363,7 @@ def settings():
             file = request.files['file']
             if file:
                 if file.filename != '':
-                    filename = secure_filename(file.filename)
-                    file.save(os.path.join(
-                        app.config['UPLOAD_FOLDER'], filename))
-                    myfirebase.upload(filename, str(current_user.sno)+'/profile_pic.png', 'profile_pic')
+                    myfirebase.upload(file, str(current_user.sno)+'/profile_pic.png', 'profile_pic')
                     piclink = myfirebase.getfileurl(
                         str(current_user.sno)+'/profile_pic.png')
                     current_user.profile_pic = piclink

@@ -1,4 +1,4 @@
-import pyrebase
+import pyrebase, os
 from PIL import Image
 
 config = {
@@ -21,12 +21,12 @@ storage = firebase.storage()
 def upload(path_local, path_on_cloud, type):
     im = Image.open(path_local)
     if type=='profile_pic':
-        im.thumbnail((600, 600))
+        im.thumbnail((500, 500))
     else:
         im.thumbnail((800, 800))
     im.save('lol.png')
-    storage.child(path_on_cloud).put("lol.png")
-    return True
+    storage.child(path_on_cloud).put('lol.png')
+    os.remove('lol.png')
 
 email = "factsworld1109@gmail.com"
 password = "help4youisbest"
