@@ -10,7 +10,7 @@
         "version":"1.11.12"
     },
     "statics": {
-        "profile_pic": "https://help4you.herokuapp.com/static/profile.png",
+        "profile_pic": "https://help4you.pythonanywhere.com/static/images/profile.png",
         "upload_folder":""
     }
 }

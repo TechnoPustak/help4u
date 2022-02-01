@@ -1,6 +1,5 @@
 from flask_mail import Mail, Message
-import json, time, os, myfirebase, convertcode, string, random
-from werkzeug.utils import secure_filename
+import json, time, myfirebase, convertcode, string, random
 from calendar import month_name
 from flask import Flask, render_template, request, session, url_for, flash, redirect
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
@@ -9,7 +8,7 @@ from flask_sslify import SSLify
 from itsdangerous import URLSafeTimedSerializer
 from itsdangerous.exc import BadSignature, SignatureExpired
 
-with open('config.json', 'r') as c:
+with open('/home/help4you/help4you/config.json', 'r') as c:
     params = json.load(c)["params"]
     c.seek(0)
     statics = json.load(c)["statics"]
@@ -29,11 +28,7 @@ mail = Mail(app)
 s = URLSafeTimedSerializer('my-secret')
 sslify = SSLify(app)
 
-# heroku pg:psql postgresql-infinite-45978 --app help4you
-database = os.environ.get('DATABASE_URL')
-database = database[:8] + 'ql' + database[8:]
-
-app.config['SQLALCHEMY_DATABASE_URI'] = database
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///help4you.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "super-secret-key"
 db = SQLAlchemy(app)
