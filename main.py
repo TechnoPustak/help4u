@@ -1,5 +1,5 @@
 from flask_mail import Mail, Message
-import json, time, myfirebase, convertcode, string, random
+import json, os, time, myfirebase, convertcode, string, random
 from calendar import month_name
 from flask import Flask, render_template, request, session, url_for, flash, redirect
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
@@ -8,7 +8,8 @@ from flask_sslify import SSLify
 from itsdangerous import URLSafeTimedSerializer
 from itsdangerous.exc import BadSignature, SignatureExpired
 
-with open('/home/help4you/help4you/config.json', 'r') as c:
+myconfig = os.environ.get('config')
+with open(myconfig, 'r') as c:
     params = json.load(c)["params"]
     c.seek(0)
     statics = json.load(c)["statics"]
@@ -233,7 +234,7 @@ def home():
                 <img src='{piclink}' width='100%'><br>
                 <a href='{qlink}'><button style='font-size:20px;background-color:aqua;border:1px solid black;border-radius:2px;'><strong>Go to the post</strong></button></a>
                 '''
-                # mail.send(msg)
+                mail.send(msg)
             return redirect('/home')
     return render_template("home.html",login=login, title=f"{params['title']}: Ask and Answer Questions", questions=questions, users=users, time=time.time(), following=followingu)
 

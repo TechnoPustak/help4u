@@ -231,17 +231,12 @@
                 {% for answer in answers.items %}
                 <tr>
                     <th scope="row">{{ loop.index + (per_page*(answers.page-1)) }}</th>
-                    {% set allq = posts.query.all() %}
-                    {% for i in allq %}
-                    {% if i.sno == answer.question_id %}
-                    {% set currentq = posts.query.filter_by(sno=i.sno).first().sno %}
-                    {% set allanswers = tanswers.query.filter_by(question_id=currentq).order_by(tanswers.sno.desc()).all() %}
-                    {% set pagenum = (((allanswers|list).index(answer))/per_page)|int + 1 %}
-                    <td><a class="mylink" href="/answer/{{ answer.question_id }}?page={{ pagenum }}#{{ answer.sno }}">{{
+                    <td><a class="mylink" href="/answer/{{ answer.question_id }}">{{
                             answer.answer[:150] }}{% if
-                            answer.answer|length>150 %}.....{% endif %}</a></td>{% endif %}{% endfor %}
-                    {% if user==current_user %}<td><a class="mylink" href="/delete/answer/{{ answer.sno }}"><button
-                                type="button" class="btn btn-danger">Delete</button></a></td>{% endif %}
+                            answer.answer|length>150 %}.....{% endif %}</a></td>
+                        {% if user==current_user %}
+                    <td><a class="mylink" href="/delete/answer/{{ answer.sno }}"><button type="button"
+                                class="btn btn-danger">Delete</button></a></td>{% endif %}
                 </tr>
                 {% endfor %}
                 <div style="text-align: center;">
