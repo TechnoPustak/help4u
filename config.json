@@ -10,7 +10,7 @@
         "version":"1.11.12"
     },
     "statics": {
-        "profile_pic": "https://help4you.pythonanywhere.com/static/images/profile.png",
+        "profile_pic": "https://ik.imagekit.io/help4you/o/defaults%2Fprofile.png?alt=media",
         "upload_folder":""
     }
 }

@@ -210,8 +210,8 @@ def home():
             file = request.files['file']
             if file:
                 if file.filename != '':
-                    psno = str(len(posts.query.all()) + 1)
-                    myfirebase.upload(file, str(current_user.sno)+'/questions/'+psno+'.jpg', 'post')
+                    psno = str(posts.query.all()[-1].sno + 1)
+                    myfirebase.upload(file, str(current_user.sno)+'/questions/'+psno+'.jpg')
                     piclink = myfirebase.getfileurl(
                         str(current_user.sno)+'/questions/'+psno+'.jpg')
             else:
@@ -358,7 +358,7 @@ def settings():
             file = request.files['file']
             if file:
                 if file.filename != '':
-                    myfirebase.upload(file, str(current_user.sno)+'/profile_pic.png', 'profile_pic')
+                    myfirebase.upload(file, str(current_user.sno)+'/profile_pic.png')
                     piclink = myfirebase.getfileurl(
                         str(current_user.sno)+'/profile_pic.png')
                     current_user.profile_pic = piclink
