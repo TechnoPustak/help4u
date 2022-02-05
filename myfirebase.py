@@ -30,7 +30,7 @@ password = "help4youisbest"
 user = auth.sign_in_with_email_and_password(email, password)
 
 def getfileurl(path_on_cloud):
-    url = storage.child(path_on_cloud).get_url(None)
+    url = storage.child(path_on_cloud).get_url(user['idToken'])
     start = url.find('/o/')
     url = 'https://ik.imagekit.io/help4you'+url[start:]
     return url
