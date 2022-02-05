@@ -1,4 +1,4 @@
-import pyrebase, os
+import pyrebase, os, string, random
 from PIL import Image
 
 config = {
@@ -30,9 +30,11 @@ password = "help4youisbest"
 user = auth.sign_in_with_email_and_password(email, password)
 
 def getfileurl(path_on_cloud):
-    url = storage.child(path_on_cloud).get_url(user['idToken'])
+    N = 20
+    res = ''.join(random.choices(string.ascii_uppercase + string.digits, k = N))
+    url = storage.child(path_on_cloud).get_url(None)
     start = url.find('/o/')
-    url = 'https://ik.imagekit.io/help4you'+url[start:]
+    url = 'https://ik.imagekit.io/help4you'+url[start:]+'&token='+res
     return url
 
 def getpath(url):
