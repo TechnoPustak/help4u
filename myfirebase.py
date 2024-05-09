@@ -2,14 +2,14 @@ import pyrebase, os, string, random
 from PIL import Image
 
 config = {
-    "apiKey": "AIzaSyA2QGz5kPdvFmg90xhDxy2FzCf9_mKOPWE",
-    "authDomain": "freestorage-dfe15.firebaseapp.com",
-    "databaseURL": "https://freestorage-dfe15-default-rtdb.asia-southeast1.firebasedatabase.app",
-    "projectId": "freestorage-dfe15",
-    "storageBucket": "freestorage-dfe15.appspot.com",
-    "messagingSenderId": "221659926279",
-    "appId": "1:221659926279:web:f6a601f45bcf30cc687fa2",
-    "measurementId": "G-PNNCK2Z5PC"
+    "apiKey": "AIzaSyA2**********_mKOPWE",
+    "authDomain": "freesto**********firebaseapp.com",
+    "databaseURL": "https://frees***********rtdb.asia-southeast1.firebasedatabase.app",
+    "projectId": "free*******ge-dfe15",
+    "storageBucket": "frees********e15.appspot.com",
+    "messagingSenderId": "228******26279",
+    "appId": "1:2216599*********cf30cc687fa2",
+    "measurementId": "G-******2Z5PC"
 }
 
 firebase = pyrebase.initialize_app(config)
